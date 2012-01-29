@@ -507,6 +507,112 @@
   });
 
 
+  test('Resource | only get', function() {
+    api.resource('cat', { only: 'show' });
+    equal(typeof api.getCat, 'function', 'get exists');
+    equal(typeof api.createCat, 'undefined', 'create does not exist');
+    equal(typeof api.updateCat, 'undefined', 'update does not exist');
+    equal(typeof api.destroyCat, 'undefined', 'delete does not exist');
+  });
+
+  test('Resource | only create', function() {
+    api.resource('cat', { only: 'create' });
+    equal(typeof api.getCat, 'undefined', 'get does not exist');
+    equal(typeof api.createCat, 'function', 'create exists');
+    equal(typeof api.updateCat, 'undefined', 'update does not exist');
+    equal(typeof api.destroyCat, 'undefined', 'delete does not exist');
+  });
+
+  test('Resource | only update and destroy', function() {
+    api.resource('cat', { only: ['update','destroy'] });
+    equal(typeof api.getCat, 'undefined', 'get does not exist');
+    equal(typeof api.createCat, 'undefined', 'create does not exist');
+    equal(typeof api.updateCat, 'function', 'update exists');
+    equal(typeof api.destroyCat, 'function', 'delete exists');
+  });
+
+  test('Resource | only update and destroy CSV', function() {
+    api.resource('cat', { only: 'update,destroy' });
+    equal(typeof api.getCat, 'undefined', 'get does not exist');
+    equal(typeof api.createCat, 'undefined', 'create does not exist');
+    equal(typeof api.updateCat, 'function', 'update exists');
+    equal(typeof api.destroyCat, 'function', 'delete exists');
+  });
+
+  test('Resource | except create', function() {
+    api.resource('cat', { except: 'create' });
+    equal(typeof api.getCat, 'function', 'get exists');
+    equal(typeof api.createCat, 'undefined', 'create does not exist');
+    equal(typeof api.updateCat, 'function', 'update exists');
+    equal(typeof api.destroyCat, 'function', 'delete exists');
+  });
+
+  test('Resource | except update and destroy', function() {
+    api.resource('cat', { except: ['update','destroy'] });
+    equal(typeof api.getCat, 'function', 'get exists');
+    equal(typeof api.createCat, 'function', 'create exists');
+    equal(typeof api.updateCat, 'undefined', 'update does not exist');
+    equal(typeof api.destroyCat, 'undefined', 'delete does not exist');
+  });
+
+  test('Resource | except update and destroy CSV', function() {
+    api.resource('cat', { except: 'update,destroy' });
+    equal(typeof api.getCat, 'function', 'get exists');
+    equal(typeof api.createCat, 'function', 'create exists');
+    equal(typeof api.updateCat, 'undefined', 'update does not exist');
+    equal(typeof api.destroyCat, 'undefined', 'delete does not exist');
+  });
+
+
+
+  test('Multiple contexts on the same level', function() {
+
+    api.context('goals/:goal_id', function() {
+      api.get('items');
+    });
+    api.context('users/:user_id', function() {
+      api.get('items');
+    });
+
+    api.getItems({ goal_id: 3 });
+    assertRouteCalled(api, 'http://domain/goals/3/items.json', 'GET');
+
+    api.getItems({ user_id: 3 });
+    assertRouteCalled(api, 'http://domain/users/3/items.json', 'GET');
+
+    api.getItems();
+    assertRouteCalled(api, 'http://domain/items.json', 'GET');
+
+  });
+
+
+  test('Multiple contexts on different levels', function() {
+
+    api.context('neighborhoods/:neighborhood_id', function() {
+      api.get('cats');
+    });
+    //api.context('neighborhoods/:neighborhood_id', function() {
+      //api.context('homes/:home_id', function() {
+        //api.get('cats');
+      //});
+    //});
+
+    api.get('cats');
+
+    api.getCats();
+    assertRouteCalled(api, 'http://domain/cats.json', 'GET');
+
+    api.getCats({ neighborhood_id: 5 });
+    assertRouteCalled(api, 'http://domain/neighborhoods/5/cats.json', 'GET');
+
+    //api.getCats({ home_id: 5 });
+    //assertRouteCalled(api, 'http://domain/homes/5/cats.json', 'GET');
+
+    //api.getCats({ neighborhood_id: 18, home_id: 5 });
+    //assertRouteCalled(api, 'http://domain/neighborhoods/18/homes/5/cats.json', 'GET');
+
+
+  });
 
 
 
@@ -518,18 +624,6 @@
 
 
   /*
-  test('show | defaults', function() {
-    api.get('home_timeline');
-    equal(typeof api.getHomeTimeline, 'function', 'show exists');
-    equal(typeof api.getHomeTimelines, 'undefined', 'index does not exist');
-    equal(typeof api.createHomeTimeline, 'undefined', 'create does not exist');
-    equal(typeof api.updateHomeTimeline, 'undefined', 'update does not exist');
-    equal(typeof api.destroyHomeTimeline, 'undefined', 'delete does not exist');
-
-    api.getHomeTimeline();
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET')
-
-  });
 
   test('show | with prefix', function() {
     api.show('home_timeline', { prefix: 'statuses' });
@@ -639,63 +733,6 @@
 
 
   /*
-  test('Resource | only get', function() {
-    api.resource('cat', { only: 'get' });
-    equal(typeof api.getCat, 'function', 'get exists');
-    equal(typeof api.createCat, 'undefined', 'create exists');
-    equal(typeof api.updateCat, 'undefined', 'update exists');
-    equal(typeof api.destroyCat, 'undefined', 'delete exists');
-  });
-
-  test('Resource | only create', function() {
-    api.resource('cat', { only: 'create' });
-    equal(typeof api.getCat, 'undefined', 'get exists');
-    equal(typeof api.createCat, 'function', 'create exists');
-    equal(typeof api.updateCat, 'undefined', 'update exists');
-    equal(typeof api.destroyCat, 'undefined', 'delete exists');
-  });
-
-  test('Resource | only update and destroy', function() {
-    api.resource('cat', { only: ['update','destroy'] });
-    equal(typeof api.getCat, 'undefined', 'get exists');
-    equal(typeof api.createCat, 'undefined', 'create exists');
-    equal(typeof api.updateCat, 'function', 'update exists');
-    equal(typeof api.destroyCat, 'function', 'delete exists');
-  });
-
-  test('Resource | only update and destroy CSV', function() {
-    api.resource('cat', { only: 'update,destroy' });
-    equal(typeof api.getCat, 'undefined', 'get exists');
-    equal(typeof api.createCat, 'undefined', 'create exists');
-    equal(typeof api.updateCat, 'function', 'update exists');
-    equal(typeof api.destroyCat, 'function', 'delete exists');
-  });
-
-
-  test('Resource | except create', function() {
-    api.resource('cat', { except: 'create' });
-    equal(typeof api.getCat, 'function', 'get exists');
-    equal(typeof api.createCat, 'undefined', 'create exists');
-    equal(typeof api.updateCat, 'function', 'update exists');
-    equal(typeof api.destroyCat, 'function', 'delete exists');
-  });
-
-  test('Resource | except update and destroy', function() {
-    api.resource('cat', { except: ['update','destroy'] });
-    equal(typeof api.getCat, 'function', 'get exists');
-    equal(typeof api.createCat, 'function', 'create exists');
-    equal(typeof api.updateCat, 'undefined', 'update exists');
-    equal(typeof api.destroyCat, 'undefined', 'delete exists');
-  });
-
-  test('Resource | except update and destroy CSV', function() {
-    api.resource('cat', { except: 'update,destroy' });
-    equal(typeof api.getCat, 'function', 'get exists');
-    equal(typeof api.createCat, 'function', 'create exists');
-    equal(typeof api.updateCat, 'undefined', 'update exists');
-    equal(typeof api.destroyCat, 'undefined', 'delete exists');
-  });
-
   test('Resources | defaults', function() {
     api.resources('cat');
     equal(typeof api.getCats, 'function', 'get exists');
