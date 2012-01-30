@@ -12,6 +12,7 @@
 
   function captureRequest(url, options) {
     capturedRequests.push({ url: url, params: options.data, method: options.type });
+    return $.Deferred().resolve({ response: 'RESPONSE!' });
   }
 
   function assertRouteCalled(context, url, method, params) {
@@ -46,7 +47,6 @@
       capturedRequests = [];
     }
   });
-
 
 
   test('Domain Setup', function() {
@@ -560,6 +560,113 @@
 
 
   });
+
+  test('default params', function() {
+    api.params({ foo: 'bar' });
+    api.param('moo', 'car');
+    api.get('home_timeline');
+    api.getHomeTimeline();
+    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { foo: 'bar', moo: 'car' })
+    equal(api.foo(), 'bar', 'Param foo can be retrieved');
+    equal(api.moo(), 'car', 'Param moo can be retrieved');
+  });
+
+
+
+  test('api key', function() {
+    api.key('3h234lk2h432hl');
+    api.get('home_timeline');
+    api.getHomeTimeline();
+    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { api_key: '3h234lk2h432hl' })
+    equal(api.key(), '3h234lk2h432hl', 'API key is retrieved');
+  });
+
+  test('api key override param', function() {
+    api.key('my_special_api_key', '3h234lk2h432hl');
+    api.get('home_timeline');
+    api.getHomeTimeline();
+    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { my_special_api_key: '3h234lk2h432hl' })
+    equal(api.key(), '3h234lk2h432hl', 'API key is retrieved');
+  });
+
+
+  test('caching', function() {
+    api.get('home_timeline');
+    api.getHomeTimeline({ foo: 'bar' });
+    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { foo: 'bar' })
+    equal(capturedRequests.length, 1, 'Captured requests is 1');
+    api.getHomeTimeline({ foo: 'bar' }, { cache: true });
+    equal(capturedRequests.length, 2, 'Begin cache capture, requests is now 2', { foo: 'bar' });
+    api.getHomeTimeline({ foo: 'bar' }, { cache: true });
+    equal(capturedRequests.length, 2, 'Captured from cache, requests is still 2', { foo: 'bar' });
+    api.getHomeTimeline();
+    equal(capturedRequests.length, 3, 'No caching, requests is now 3');
+  });
+
+  test('allow options through constructor', function() {
+
+    var api = new APIInterface({
+      domain: 'foobar.com',
+      protocol: 'https',
+      port: 5002,
+      key: 'APIKEY',
+      routes: [
+        'GET statuses/home_timeline',
+        'GET statuses/mentions',
+        'GET statuses/public_timeline',
+        'GET statuses/retweeted_by_me',
+        'GET statuses/retweeted_to_me',
+        'GET statuses/retweets_of_me',
+        'GET statuses/user_timeline',
+        'GET statuses/retweeted_to_user',
+        'GET statuses/retweeted_by_user'
+      ]
+    });
+
+    var twitter_routes = [
+      ['home_timeline','HomeTimeline'],
+      ['mentions','Mentions'],
+      ['public_timeline','PublicTimeline'],
+      ['retweeted_by_me','RetweetedByMe'],
+      ['retweeted_to_me','RetweetedToMe'],
+      ['retweets_of_me','RetweetsOfMe'],
+      ['user_timeline','UserTimeline'],
+      ['retweeted_to_user','RetweetedToUser'],
+      ['retweeted_by_user','RetweetedByUser']
+    ];
+
+
+    arrayEach(twitter_routes, function(r) {
+      var path = r[0];
+      var method = 'get' + r[1];
+      api[method]();
+      assertRouteCalled(api, 'https://foobar.com:5002/statuses/' + path + '.json', 'GET', { api_key: 'APIKEY' })
+    });
+
+  });
+
+
+  test('allow options through constructor with as override', function() {
+
+    var api = new APIInterface({
+      domain: 'foobar.com',
+      protocol: 'https',
+      port: 5002,
+      key: 'APIKEY',
+      routes: [
+        'GET foobar',
+        'GET foobars AS whatever'
+      ]
+    });
+
+    api.getFoobar();
+    assertRouteCalled(api, 'https://foobar.com:5002/foobar.json', 'GET', { api_key: 'APIKEY' })
+
+    api.whatever();
+    assertRouteCalled(api, 'https://foobar.com:5002/foobars.json', 'GET', { api_key: 'APIKEY' })
+
+  });
+
 
 
 

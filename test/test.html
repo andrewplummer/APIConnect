@@ -10,16 +10,17 @@
       $(document).click(function() {
 
           var api = new APIInterface();
-          api.domain('meguro');
-          api.port(4002);
-          api.cors(false);
+          api.domain('tokyo');
+          //api.port(4000);
+          //api.key('foadfa');
+          //api.params('token', 'MOKEN');
+          //api.cors(false);
 
-          api.get('APIInterface/test/api/test');
+          <!--api.get('APIInterface/test/api/test');-->
 
-          var a = api.getTest({}, { timeout: 2000, success: function(data) { console.info('wowowowow', data);} }).fail(function() {
-            
-            console.info('arf');
-          });
+          <!--var a = api.getTest({}, { timeout: 2000, success: function(data) { console.info('wowowowow', data.cats.length);} }).fail(function() {-->
+            <!--console.info('arf');-->
+          <!--});-->
 
       });
 
