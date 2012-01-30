@@ -12,10 +12,14 @@
           var api = new APIInterface();
           api.domain('meguro');
           api.port(4002);
+          api.cors(false);
 
           api.get('APIInterface/test/api/test');
 
-          var a = api.getTest({}, { success: function(data) { console.info('wowowowow', data);} });
+          var a = api.getTest({}, { timeout: 2000, success: function(data) { console.info('wowowowow', data);} }).fail(function() {
+            
+            console.info('arf');
+          });
 
       });
 
