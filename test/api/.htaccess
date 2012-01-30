@@ -1,0 +1,4 @@
+Header set Access-Control-Allow-Origin *
+Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+AddType application/x-httpd-php .json

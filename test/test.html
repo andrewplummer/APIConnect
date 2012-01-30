@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <script src="../lib/main.js"></script>
+    <script src="../vendor/jquery-1.7.1.js"></script>
+    <script type="text/javascript">
+
+      $(document).click(function() {
+
+          var api = new APIInterface();
+          api.domain('meguro');
+          api.port(4002);
+
+          api.get('APIInterface/test/api/test');
+
+          var a = api.getTest({}, { success: function(data) { console.info('wowowowow', data);} });
+
+      });
+
+    </script>
+  </body>
+</html>

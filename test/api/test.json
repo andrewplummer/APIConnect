@@ -1,0 +1,30 @@
+<?
+
+$callback = $_GET['callback'];
+
+$json = <<<JSON
+{
+  "cats": [
+    {
+      "name": "Gerold",
+      "age": 2,
+      "hobby": "Catching mice"
+    },
+    {
+      "name": "Harold",
+      "age": 7,
+      "hobby": "Scratching"
+    }
+  ]
+}
+JSON;
+
+
+if($callback) {
+  echo "$callback($json);";
+} else {
+  echo $json;
+}
+
+
+?>

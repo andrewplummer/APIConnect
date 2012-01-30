@@ -1,16 +1,34 @@
 (function() {
 
 
-  var api;
+  // Local vars
+
+  var api, capturedRequests = [];
+
+  $.ajax = captureRequest;
+
+
+  // Utility methods
+
+  function captureRequest(url, options) {
+    capturedRequests.push({ url: url, params: options.data, method: options.type });
+  }
 
   function assertRouteCalled(context, url, method, params) {
+    var request = capturedRequests[capturedRequests.length - 1],
+        expectedParamsLength = 0,
+        actualParamsLength = 0;
     params = params || {};
-    equals(context.last.url, url, 'Last URL was: ' + url);
-    equals(context.last.method, method, 'Last method was: ' + method);
+    equals(request.url, url, 'Last URL was: ' + url);
+    equals(request.method, method, 'Last method was: ' + method);
     for(var key in params) {
-      equals(context.last.params[key], params[key], 'Params ' + key + ' was: ' + params[key]);
-
+      equals(request.params[key], params[key], 'Params ' + key + ' was: ' + params[key]);
+      expectedParamsLength += 1;
     }
+    for(var key in request.params) {
+      actualParamsLength += 1;
+    }
+    equals(actualParamsLength, expectedParamsLength, 'Params length was correct');
   }
 
   function arrayEach(arr, fn) {
@@ -21,14 +39,13 @@
     }
   }
 
-
   module('APIInterface', {
     setup: function() {
       api = new APIInterface();
       api.domain('domain');
+      capturedRequests = [];
     }
   });
-
 
 
 
@@ -543,6 +560,8 @@
 
 
   });
+
+
 
 
 })();

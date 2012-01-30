@@ -7694,6 +7694,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 		}
 	}
 
+      console.info('howdy', jqXHR.getResponseHeader("content-type"));
 	// Remove auto dataType and get content-type in the process
 	while( dataTypes[ 0 ] === "*" ) {
 		dataTypes.shift();
