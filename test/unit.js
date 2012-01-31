@@ -11,15 +11,27 @@
   // Utility methods
 
   function captureRequest(url, options) {
-    capturedRequests.push({ url: url, params: options.data, method: options.type });
+    capturedRequests.push({ url: url, options: options, params: options.data, method: options.type });
     return $.Deferred().resolve({ response: 'RESPONSE!' });
+  }
+
+  function overrideIfRequestIsJSONP(params, method, setting) {
+    return !params._method &&
+           !$.support.cors &&
+           (setting == 'jsonp' || (setting == 'jsonp-except-get' && method != 'GET'));
   }
 
   function assertRouteCalled(context, url, method, params) {
     var request = capturedRequests[capturedRequests.length - 1],
         expectedParamsLength = 0,
         actualParamsLength = 0;
+
     params = params || {};
+
+    if(overrideIfRequestIsJSONP(params, method, context.defaultOptions.methodOverride)) {
+      params._method = method;
+      method = 'GET';
+    }
     equals(request.url, url, 'Last URL was: ' + url);
     equals(request.method, method, 'Last method was: ' + method);
     for(var key in params) {
@@ -751,6 +763,127 @@
     equal(typeof api.destroyCap, 'function', 'destroy exists');
 
   });
+
+
+  test('methodOverride | always', function() {
+
+    api.methodOverride('always');
+
+    api.get('foobar');
+    api.post('foobar');
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'GET' })
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
+
+  });
+
+  test('methodOverride | jsonp', function() {
+
+    api.methodOverride('jsonp');
+
+    api.get('foobar');
+    api.post('foobar');
+
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'POST')
+
+    api.cors(false);
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'GET' })
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' });
+
+  });
+
+
+  test('methodOverride | never', function() {
+
+    api.methodOverride('never');
+    api.cors(false);
+
+    api.get('foobar');
+    api.post('foobar');
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'POST')
+
+  });
+
+
+
+  test('methodOverride | always-except-get', function() {
+
+    api.methodOverride('always-except-get');
+
+    api.get('foobar');
+    api.post('foobar');
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
+
+  });
+
+
+  test('methodOverride | jsonp-except-get', function() {
+
+    api.methodOverride('jsonp-except-get');
+
+    api.get('foobar');
+    api.post('foobar');
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'POST')
+
+    api.cors(false);
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
+
+  });
+
+
+  test('methodOverride | default is jsonp-except-get', function() {
+
+    api.get('foobar');
+    api.post('foobar');
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'POST')
+
+    api.cors(false);
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
+
+  });
+
 
 
 
