@@ -48,7 +48,6 @@
     }
   });
 
-
   test('Domain Setup', function() {
     strictEqual(api.domain('test'), api, 'APIInterface#domain setting should return the instance');
     equal(api.domain(), 'test', ' APIInterface#domain calling without arguments should return the field');
@@ -396,6 +395,47 @@
 
   });
 
+  test('resource with compound context', function() {
+
+    api.context('foo/:foo_id/bar/:bar_id', function() {
+      api.resource('status');
+    });
+
+    api.getStatus();
+    assertRouteCalled(api, 'http://domain/status.json', 'GET')
+
+    api.getStatus({ foo_id: 5 });
+    assertRouteCalled(api, 'http://domain/foo/5/status.json', 'GET')
+
+    api.getStatus({ foo_id: 5, bar_id: 7 });
+    assertRouteCalled(api, 'http://domain/foo/5/bar/7/status.json', 'GET')
+
+    api.getStatus({ bar_id: 7 });
+    assertRouteCalled(api, 'http://domain/bar/7/status.json', 'GET')
+
+
+  });
+
+  test('resource with inline context', function() {
+
+    api.resource('foo/:foo_id/bar/:bar_id/status');
+
+    api.getStatus();
+    assertRouteCalled(api, 'http://domain/status.json', 'GET')
+
+    api.getStatus({ foo_id: 5 });
+    assertRouteCalled(api, 'http://domain/foo/5/status.json', 'GET')
+
+    api.getStatus({ foo_id: 5, bar_id: 7 });
+    assertRouteCalled(api, 'http://domain/foo/5/bar/7/status.json', 'GET')
+
+    api.getStatus({ bar_id: 7 });
+    assertRouteCalled(api, 'http://domain/bar/7/status.json', 'GET')
+
+
+  });
+
+
 
   test('custom twitter routes', function() {
 
@@ -589,7 +629,6 @@
     equal(api.key(), '3h234lk2h432hl', 'API key is retrieved');
   });
 
-
   test('caching', function() {
     api.get('home_timeline');
     api.getHomeTimeline({ foo: 'bar' });
@@ -605,7 +644,7 @@
 
   test('allow options through constructor', function() {
 
-    var api = new APIInterface({
+    api = new APIInterface({
       domain: 'foobar.com',
       protocol: 'https',
       port: 5002,
@@ -648,7 +687,7 @@
 
   test('allow options through constructor with as override', function() {
 
-    var api = new APIInterface({
+    api = new APIInterface({
       domain: 'foobar.com',
       protocol: 'https',
       port: 5002,
@@ -668,6 +707,50 @@
   });
 
 
+  test('allow resources through constructor', function() {
+
+    api = new APIInterface({
+      domain: 'foobar.com',
+      resources: [
+        'status',
+        'foo/:foo_id/poo',
+        'foo/:foo_id/cats'
+      ]
+    });
+
+    api.getStatus();
+    assertRouteCalled(api, 'http://foobar.com/status.json', 'GET')
+
+    api.updatePoo({ foo_id: 19, maw: 'hoho' });
+    assertRouteCalled(api, 'http://foobar.com/foo/19/poo.json', 'PUT', { maw: 'hoho' })
+
+    api.destroyCat({ id: 3, foo_id: 19 });
+    assertRouteCalled(api, 'http://foobar.com/foo/19/cats/3.json', 'DELETE')
+
+  });
+
+  test('allow resources through constructor with overrides', function() {
+
+    api = new APIInterface({
+      domain: 'foobar.com',
+      resources: [
+        'statuses ONLY index,destroy',
+        'cap EXCEPT update'
+      ]
+    });
+
+    equal(typeof api.getStatuses, 'function', 'index exists');
+    equal(typeof api.getStatus, 'undefined', 'show does not exist');
+    equal(typeof api.destroyStatus, 'function', 'destroy exists');
+    equal(typeof api.updateStatus, 'undefined', 'update does not exist');
+
+    equal(typeof api.getCaps, 'undefined', 'index does not exist');
+    equal(typeof api.getCap, 'function', 'show exists');
+    equal(typeof api.createCap, 'function', 'create exists');
+    equal(typeof api.updateCap, 'undefined', 'update does not exist');
+    equal(typeof api.destroyCap, 'function', 'destroy exists');
+
+  });
 
 
 
