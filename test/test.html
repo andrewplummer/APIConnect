@@ -3,25 +3,23 @@
     <title></title>
   </head>
   <body>
-    <script src="../lib/main.js"></script>
     <script src="../vendor/jquery-1.7.1.js"></script>
+    <script src="../lib/main.js"></script>
     <script type="text/javascript">
 
       $(document).click(function() {
 
           var api = new APIInterface();
-          api.domain('tokyo');
-          //api.port(4000);
-          //api.key('foadfa');
-          //api.params('token', 'MOKEN');
+          api.domain('meguro');
+          api.port(4000);
+
+          api.get('APIInterface/test/api/twitter');
           //api.cors(false);
 
-          api.get('APIInterface/test/api/test');
-
-          var a = api.getTest({}, { timeout: 2000, success: function(data) { console.info('wowowowow', data.cats.length);} }).fail(function() {
-            console.info('arf');
+          var a = api.getTwitter().then(function(data) {
+            console.info('hahaah', data);
+            
           });
-
       });
 
     </script>

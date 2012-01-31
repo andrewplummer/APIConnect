@@ -1,5 +1,9 @@
 <?
 
+
+require('cors.php');
+
+
 $callback = $_GET['callback'];
 
 $json = <<<JSON
