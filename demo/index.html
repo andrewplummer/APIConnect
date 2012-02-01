@@ -75,19 +75,45 @@
   <body spellcheck="false">
     <div class="tabs"></div>
   <pre>
+// Create an instance
 var api = new APIInterface();
 
+  </pre>
+  <pre>
+// Create an instance
+var api = new APIInterface();
+
+// Set the domain
 api.domain('search.twitter.com');
 
+  </pre>
+  <pre>
+// Create an instance
+var api = new APIInterface();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// Connect the route
 api.connect('search');
 
-api.getSearch({ q: 'cookpad' });
+  </pre>
+  <pre>
+// Create an instance
+var api = new APIInterface();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// Connect the route
+api.connect('search');
+
+// Run the route
+api.getSearch();
   </pre>
   <pre>
 var api = new APIInterface();
-
 api.domain('search.twitter.com');
-
 api.connect('search');
 
 // Only support JSONP
@@ -104,12 +130,8 @@ api.getSearch({ q: 'cookpad' }, {
   </pre>
   <pre>
 var api = new APIInterface();
-
 api.domain('search.twitter.com');
-
 api.connect('search');
-
-// Only support JSONP
 api.cors(false);
 
 // Returns jQuery deferred objects
@@ -117,10 +139,7 @@ api.getSearch({ q: 'cookpad' }).then(showResults);
   </pre>
   <pre>
 var api = new APIInterface();
-
 api.domain('api.iknow.jp');
-
-// Only support JSONP
 api.cors(false);
 
 // Allow optional contexts
@@ -130,7 +149,6 @@ api.getItems({ goal_id: 910 }).then(showItems);
   </pre>
   <pre>
 var api = new APIInterface();
-
 api.domain('api.twitter.com');
 
 // Alternate HTTP methods
@@ -140,13 +158,43 @@ api.createFavorites({ username: 'budday' });
   </pre>
   <pre>
 var api = new APIInterface();
-
 api.domain('api.twitter.com');
 
-// Alternate HTTP methods
+// RESTful resources
+api.resource(':username/favorite');
+
+api.getFavorite({ username: 'budday' });
+api.createFavorite({ username: 'budday' });
+api.updateFavorite({ username: 'budday' });
+api.destroyFavorite({ username: 'budday' });
+
+  </pre>
+  <pre>
+var api = new APIInterface();
+api.domain('api.twitter.com');
+
+// "favorites" indicates a collection
 api.resource(':username/favorites');
 
+// index
+api.getFavorites({ username: 'budday' });
+// show
+api.getFavorite({ username: 'budday', id: 3 });
+
 api.createFavorite({ username: 'budday' });
+api.updateFavorite({ username: 'budday', id: 3 });
+api.destroyFavorite({ username: 'budday', id: 3 });
+
+  </pre>
+  <pre>
+var api = new APIInterface();
+api.domain('andrewplummer.com');
+api.format(false);
+
+api.connect('recipes');
+
+// Allow credentials
+api.getRecipes({}).then(showResults);
   </pre>
   <pre>
 api = api || new APIInterface();
@@ -156,11 +204,26 @@ api.format(false);
 
 api.connect('recipes');
 
+// Internal caching
 api.getRecipes({}, { cache: true }).then(showResults);
   </pre>
   <pre>
-// Future??
+// All routes/options/params in the constructor
+var api = new APIInterface({
+  domain   : 'api.twitter.com',
+  protocol : 'https',
+  cors     :  false,
+  routes   : [
+    'GET  /status',
+    'POST /statuses/update',
+    'POST direct_messages/destroy/:id AS destroyMessage'
+  ]
+});
 
+api.destroyMessage({ id: 7 });
+  </pre>
+  <pre>
+// Future??
 var api = new APIInterface();
 
 api.getManifest(function() {
@@ -193,11 +256,22 @@ api.getManifest(function() {
         }).join(''));
       }
 
+      currentTab = 1;
+
+      $(document).keydown(function(e) {
+          if(e.which == 37) {
+            setTab(currentTab - 1);
+          } else if (e.which == 39) {
+            setTab(currentTab + 1);
+          }
+      });
+
       $('pre').each(function(i) {
           var el = $(this);
           el.addClass('sh_javascript').attr('contentEditable', true);
           el.toggleClass('hidden', i > 0);
           $('<p>' + (i + 1) + '</p>').appendTo($('.tabs')).click(function() {
+            currentTab = parseInt(i) + 1;
             window.location.hash = '#' + (i + 1);
             $('pre').hide();
             $('.tabs p').removeClass('active');
@@ -211,8 +285,13 @@ api.getManifest(function() {
       });
 
       var match;
-      if(match = window.location.hash.match(/#(\d)/)) {
-        $('.tabs p').eq(match[1] - 1).click();
+      if(match = window.location.hash.match(/#(\d+)/)) {
+        setTab(parseInt(match[1]));
+      }
+
+      function setTab(i) {
+        currentTab = Math.max(1, Math.min($('.tabs p').length, i));
+        $('.tabs p').eq(currentTab - 1).click();
       }
 
       sh_highlightDocument();
