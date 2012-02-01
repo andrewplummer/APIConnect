@@ -7,15 +7,15 @@
       html {
         color: #fff;
         margin: 0px;
-        background: -moz-linear-gradient(0% 100% 90deg,#201b1b, #111);
-        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(37,37,37,0.2)), to(rgba(0,0,0,0.3)));
+        background: -moz-linear-gradient(0% 100% 90deg,#350a0a, #180505);
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#350a0a), to(#180505));
+        height: 100%;
       }
       pre {
         background: none;
         border: none;
         padding: 30px;
         width: 100%;
-        height: 80%;
         font-size: 25px;
         font-family: Courier;
         outline: none;
@@ -79,7 +79,7 @@ var api = new APIInterface();
 
 api.domain('search.twitter.com');
 
-api.get('search');
+api.connect('search');
 
 api.getSearch({ q: 'cookpad' });
   </pre>
@@ -88,13 +88,18 @@ var api = new APIInterface();
 
 api.domain('search.twitter.com');
 
-api.get('search');
+api.connect('search');
+
+// Only support JSONP
 api.cors(false);
 
 api.getSearch({ q: 'cookpad' }, {
+
+  // All ajax options passed on to jQuery
   success: function(data) {
     showResults(data);
   }
+
 });
   </pre>
   <pre>
@@ -102,20 +107,46 @@ var api = new APIInterface();
 
 api.domain('search.twitter.com');
 
-api.get('search');
+api.connect('search');
+
+// Only support JSONP
 api.cors(false);
 
+// Returns jQuery deferred objects
 api.getSearch({ q: 'cookpad' }).then(showResults);
   </pre>
   <pre>
 var api = new APIInterface();
 
 api.domain('api.iknow.jp');
+
+// Only support JSONP
 api.cors(false);
 
-api.get('goals/:goal_id/items');
+// Allow optional contexts
+api.connect('goals/:goal_id/items');
 
 api.getItems({ goal_id: 910 }).then(showItems);
+  </pre>
+  <pre>
+var api = new APIInterface();
+
+api.domain('api.twitter.com');
+
+// Alternate HTTP methods
+api.connect('POST :username/favorites');
+
+api.createFavorites({ username: 'budday' });
+  </pre>
+  <pre>
+var api = new APIInterface();
+
+api.domain('api.twitter.com');
+
+// Alternate HTTP methods
+api.resource(':username/favorites');
+
+api.createFavorite({ username: 'budday' });
   </pre>
   <pre>
 api = api || new APIInterface();
@@ -123,7 +154,7 @@ api = api || new APIInterface();
 api.domain('andrewplummer.com');
 api.format(false);
 
-api.get('recipes');
+api.connect('recipes');
 
 api.getRecipes({}, { cache: true }).then(showResults);
   </pre>
@@ -143,7 +174,7 @@ api.getManifest(function() {
   </pre>
   <div id="stage"></div>
   <button>Punch it, Chewie</button>
-    <script src="../vendor/jquery-1.7.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script src="../lib/main.js"></script>
     <script src="sh_main.min.js" type="text/javascript"></script>
     <script src="sh_javascript.min.js" type="text/javascript"></script>

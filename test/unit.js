@@ -3,7 +3,7 @@
 
   // Local vars
 
-  var api, capturedRequests = [];
+  var api, capturedRequests = [], counter;
 
   $.ajax = captureRequest;
 
@@ -52,11 +52,16 @@
     }
   }
 
+  function updateCounter() {
+    counter++;
+  }
+
   module('APIInterface', {
     setup: function() {
       api = new APIInterface();
       api.domain('domain');
       capturedRequests = [];
+      counter = 0;
     }
   });
 
@@ -72,7 +77,7 @@
     api.port('5000');
     api.format('xml');
 
-    api.get('foobar');
+    api.connect('foobar');
     api.getFoobar();
 
     assertRouteCalled(api, 'https://twotter.com:5000/foobar.xml', 'GET')
@@ -81,7 +86,7 @@
 
 
   test('get | home_timeline', function() {
-    api.get('home_timeline');
+    api.connect('home_timeline');
     equal(typeof api.getHomeTimeline, 'function', 'show exists');
     equal(typeof api.getHomeTimelines, 'undefined', 'index does not exist');
     equal(typeof api.createHomeTimeline, 'undefined', 'create does not exist');
@@ -95,7 +100,7 @@
 
 
   test('post | home_timeline', function() {
-    api.post('home_timeline');
+    api.connect('POST home_timeline');
     equal(typeof api.getHomeTimeline, 'undefined', 'show does not exist');
     equal(typeof api.getHomeTimelines, 'undefined', 'index does not exist');
     equal(typeof api.createHomeTimeline, 'function', 'create exists');
@@ -108,7 +113,7 @@
   });
 
   test('put | home_timeline', function() {
-    api.put('home_timeline');
+    api.connect('PUT home_timeline');
     equal(typeof api.getHomeTimeline, 'undefined', 'show does not exist');
     equal(typeof api.getHomeTimelines, 'undefined', 'index does not exist');
     equal(typeof api.createHomeTimeline, 'undefined', 'create does not exist');
@@ -121,7 +126,7 @@
   });
 
   test('delete | home_timeline', function() {
-    api.del('home_timeline');
+    api.connect('DELETE home_timeline');
     equal(typeof api.getHomeTimeline, 'undefined', 'show does not exist');
     equal(typeof api.getHomeTimelines, 'undefined', 'index does not exist');
     equal(typeof api.createHomeTimeline, 'undefined', 'create does not exist');
@@ -149,7 +154,7 @@
 
     api.context('statuses', function() {
       arrayEach(twitter_routes, function(route) {
-        api.get(route[0]);
+        api.connect(route[0]);
       });
     });
 
@@ -165,7 +170,7 @@
   test('twitter routes with params', function() {
 
     api.context('statuses/:id', function() {
-      api.get('retweeted_by');
+      api.connect('retweeted_by');
     });
 
     equal(typeof api.getRetweetedBy, 'function', 'route exists');
@@ -181,9 +186,9 @@
   test('returns from compound context', function() {
 
     api.context('statuses/:status_id', function() {
-      api.get('profile');
+      api.connect('profile');
     });
-    api.get('moof');
+    api.connect('moof');
 
     api.getProfile({ status_id: 15 });
     assertRouteCalled(api, 'http://domain/statuses/15/profile.json', 'GET');
@@ -203,7 +208,7 @@
 
   test('single show context', function() {
 
-    api.get('statuses/:status_id');
+    api.connect('statuses/:status_id');
 
     api.getStatus({ status_id: 15 });
     assertRouteCalled(api, 'http://domain/statuses/15.json', 'GET');
@@ -217,7 +222,7 @@
 
   test('deep optional contexts', function() {
 
-    api.get('goals/:goal_id/items/:item_id/sentences/:sentence_id');
+    api.connect('goals/:goal_id/items/:item_id/sentences/:sentence_id');
 
     api.getSentence({ sentence_id: 15, item_id: 19, goal_id: 2 });
     assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15.json', 'GET');
@@ -242,9 +247,9 @@
 
   test('multiple optional contexts', function() {
 
-    api.get('goals/:goal_id/items/:item_id/sentences/:sentence_id');
-    api.get('goals/:goal_id/items/:item_id');
-    api.get('goals/:goal_id');
+    api.connect('goals/:goal_id/items/:item_id/sentences/:sentence_id');
+    api.connect('goals/:goal_id/items/:item_id');
+    api.connect('goals/:goal_id');
 
     api.getSentence({ sentence_id: 15, item_id: 19, goal_id: 2 });
     assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15.json', 'GET');
@@ -263,9 +268,9 @@
 
   test('create | multiple optional contexts', function() {
 
-    api.post('goals/:goal_id/items/:item_id/sentences/:sentence_id');
-    api.post('goals/:goal_id/items/:item_id');
-    api.post('goals/:goal_id');
+    api.connect('POST goals/:goal_id/items/:item_id/sentences/:sentence_id');
+    api.connect('POST goals/:goal_id/items/:item_id');
+    api.connect('POST goals/:goal_id');
 
     api.createSentence({ sentence_id: 15, item_id: 19, goal_id: 2 });
     assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15.json', 'POST');
@@ -283,9 +288,9 @@
 
   test('destroy | multiple optional contexts', function() {
 
-    api.del('goals/:goal_id/items/:item_id/sentences/:sentence_id');
-    api.del('goals/:goal_id/items/:item_id');
-    api.del('goals/:goal_id');
+    api.connect('DELETE goals/:goal_id/items/:item_id/sentences/:sentence_id');
+    api.connect('DELETE goals/:goal_id/items/:item_id');
+    api.connect('DELETE goals/:goal_id');
 
     api.destroySentence({ sentence_id: 15, item_id: 19, goal_id: 2 });
     assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15.json', 'DELETE');
@@ -382,7 +387,7 @@
 
   test('resource | uncountable collection on explicit GET', function() {
 
-    api.get('tweets/:tweet_id', { collection: true });
+    api.connect('tweets/:tweet_id', { collection: true });
 
     api.getTweet({ tweet_id: 3 });
     assertRouteCalled(api, 'http://domain/tweets/3.json', 'GET');
@@ -396,7 +401,7 @@
   test('resource | uncountable collection on explicit GET routed with context', function() {
 
     api.context('tweets/:tweet_id', function() {
-      api.get('status', { collection: true });
+      api.connect('status', { collection: true });
     });
 
     api.getStatus({ tweet_id: 3 });
@@ -453,18 +458,18 @@
 
     api.context('statuses/:id', function() {
 
-      api.get('retweeted_by');
-      api.get('retweeted_by/ids');
+      api.connect('retweeted_by');
+      api.connect('retweeted_by/ids');
 
     });
 
     api.context('statuses', function() {
 
-      api.post('destroy/:id', { as: 'destroyTweet' });
-      api.post('retweet/:id');
-      api.post('update', { as: 'updateStatus' });
-      api.post('update_with_media', { as: 'updateStatusWithMedia' });
-      api.get('oembed');
+      api.connect('POST destroy/:id', { as: 'destroyTweet' });
+      api.connect('POST retweet/:id');
+      api.connect('POST update', { as: 'updateStatus' });
+      api.connect('POST update_with_media', { as: 'updateStatusWithMedia' });
+      api.connect('oembed');
 
     });
 
@@ -557,10 +562,10 @@
   test('Multiple contexts on the same level', function() {
 
     api.context('goals/:goal_id', function() {
-      api.get('items');
+      api.connect('items');
     });
     api.context('users/:user_id', function() {
-      api.get('items');
+      api.connect('items');
     });
 
     api.getItems({ goal_id: 3 });
@@ -588,15 +593,15 @@
   test('Multiple contexts on different levels', function() {
 
     api.context('neighborhoods/:neighborhood_id', function() {
-      api.get('cats');
+      api.connect('cats');
     });
     api.context('neighborhoods/:neighborhood_id', function() {
       api.context('homes/:home_id', function() {
-        api.get('cats');
+        api.connect('cats');
       });
     });
 
-    api.get('cats');
+    api.connect('cats');
 
     api.getCats();
     assertRouteCalled(api, 'http://domain/cats.json', 'GET');
@@ -616,7 +621,7 @@
   test('default params', function() {
     api.params({ foo: 'bar' });
     api.param('moo', 'car');
-    api.get('home_timeline');
+    api.connect('home_timeline');
     api.getHomeTimeline();
     assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { foo: 'bar', moo: 'car' })
     equal(api.foo(), 'bar', 'Param foo can be retrieved');
@@ -627,7 +632,7 @@
 
   test('api key', function() {
     api.key('3h234lk2h432hl');
-    api.get('home_timeline');
+    api.connect('home_timeline');
     api.getHomeTimeline();
     assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { api_key: '3h234lk2h432hl' })
     equal(api.key(), '3h234lk2h432hl', 'API key is retrieved');
@@ -635,23 +640,34 @@
 
   test('api key override param', function() {
     api.key('my_special_api_key', '3h234lk2h432hl');
-    api.get('home_timeline');
+    api.connect('home_timeline');
     api.getHomeTimeline();
     assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { my_special_api_key: '3h234lk2h432hl' })
     equal(api.key(), '3h234lk2h432hl', 'API key is retrieved');
   });
 
   test('caching', function() {
-    api.get('home_timeline');
+    api.connect('home_timeline');
     api.getHomeTimeline({ foo: 'bar' });
+
     assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { foo: 'bar' })
     equal(capturedRequests.length, 1, 'Captured requests is 1');
+
     api.getHomeTimeline({ foo: 'bar' }, { cache: true });
     equal(capturedRequests.length, 2, 'Begin cache capture, requests is now 2', { foo: 'bar' });
-    api.getHomeTimeline({ foo: 'bar' }, { cache: true });
+
+    api.getHomeTimeline({ foo: 'bar' }, {
+      cache: true,
+      complete: updateCounter,
+      success:  updateCounter,
+      error:    updateCounter
+    }).then(updateCounter);
     equal(capturedRequests.length, 2, 'Captured from cache, requests is still 2', { foo: 'bar' });
+
     api.getHomeTimeline();
+
     equal(capturedRequests.length, 3, 'No caching, requests is now 3');
+    equal(counter, 3, 'Counter should be 3');
   });
 
   test('allow options through constructor', function() {
@@ -769,8 +785,8 @@
 
     api.methodOverride('always');
 
-    api.get('foobar');
-    api.post('foobar');
+    api.connect('foobar');
+    api.connect('POST foobar');
 
     api.getFoobar();
     assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'GET' })
@@ -784,8 +800,8 @@
 
     api.methodOverride('jsonp');
 
-    api.get('foobar');
-    api.post('foobar');
+    api.connect('foobar');
+    api.connect('POST foobar');
 
 
     api.getFoobar();
@@ -810,8 +826,8 @@
     api.methodOverride('never');
     api.cors(false);
 
-    api.get('foobar');
-    api.post('foobar');
+    api.connect('foobar');
+    api.connect('POST foobar');
 
     api.getFoobar();
     assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
@@ -827,8 +843,8 @@
 
     api.methodOverride('always-except-get');
 
-    api.get('foobar');
-    api.post('foobar');
+    api.connect('foobar');
+    api.connect('POST foobar');
 
     api.getFoobar();
     assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
@@ -843,8 +859,8 @@
 
     api.methodOverride('jsonp-except-get');
 
-    api.get('foobar');
-    api.post('foobar');
+    api.connect('foobar');
+    api.connect('POST foobar');
 
     api.getFoobar();
     assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
@@ -865,8 +881,8 @@
 
   test('methodOverride | default is jsonp-except-get', function() {
 
-    api.get('foobar');
-    api.post('foobar');
+    api.connect('foobar');
+    api.connect('POST foobar');
 
     api.getFoobar();
     assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
@@ -883,8 +899,6 @@
     assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
 
   });
-
-
 
 
 })();
