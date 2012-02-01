@@ -901,4 +901,18 @@
   });
 
 
+  test('tricking with an extra slash', function() {
+
+    api.connect('POST /statuses/favorite');
+    api.connect('PUT statuses/favorite');
+
+    api.createFavorite();
+    assertRouteCalled(api, 'http://domain/statuses/favorite.json', 'POST')
+
+    api.updateFavorite();
+    assertRouteCalled(api, 'http://domain/statuses/favorite.json', 'PUT')
+
+  });
+
+
 })();
