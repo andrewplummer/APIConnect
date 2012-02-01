@@ -55,10 +55,19 @@
         width: 30%;
         font-size: 17px;
         color: #eee;
-        line-height: 1.8;
+      }
+
+      #stage p {
+        margin: 4px 0px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+      }
+
+      .item {
+        font-size: 20px;
+        display: inline-block;
+        margin: 2px 5px;
       }
 
     </style>
@@ -101,19 +110,24 @@ api.getSearch({ q: 'cookpad' }).then(showResults);
   <pre>
 var api = new APIInterface();
 
+api.domain('api.iknow.jp');
+api.cors(false);
+
+api.get('goals/:goal_id/items');
+
+api.getItems({ goal_id: 910 }).then(showItems);
+  </pre>
+  <pre>
+api = api || new APIInterface();
+
 api.domain('andrewplummer.com');
 api.format(false);
 
 api.get('recipes');
 
-api.getRecipes({}, {
-  success: function(data) {
-    showResults(data);
-  }
-});
+api.getRecipes({}, { cache: true }).then(showResults);
   </pre>
   <pre>
-
 // Future??
 
 var api = new APIInterface();
@@ -135,10 +149,16 @@ api.getManifest(function() {
     <script src="sh_javascript.min.js" type="text/javascript"></script>
     <script type="text/javascript">
 
+      showItems = function(data) {
+        $('#stage').html(data.items.map(function(i) {
+              return '<span class="item">' + i.cue.content.text + '</span>';
+        }).join(''));
+      }
+
       showResults = function(data) {
         $('#stage').html(data.results.map(function(t) {
-          return t.text;
-        }).join('<br/>'));
+              return '<p>' + t.text + '</p>';
+        }).join(''));
       }
 
       $('pre').each(function(i) {
@@ -146,6 +166,7 @@ api.getManifest(function() {
           el.addClass('sh_javascript').attr('contentEditable', true);
           el.toggleClass('hidden', i > 0);
           $('<p>' + (i + 1) + '</p>').appendTo($('.tabs')).click(function() {
+            window.location.hash = '#' + (i + 1);
             $('pre').hide();
             $('.tabs p').removeClass('active');
             $(this).addClass('active');
@@ -156,6 +177,11 @@ api.getManifest(function() {
           $('#stage').empty();
           eval($('pre:visible').text());
       });
+
+      var match;
+      if(match = window.location.hash.match(/#(\d)/)) {
+        $('.tabs p').eq(match[1] - 1).click();
+      }
 
       sh_highlightDocument();
     </script>
