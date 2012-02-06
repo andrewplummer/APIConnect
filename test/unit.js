@@ -914,5 +914,84 @@
 
   });
 
+  test('massive GET urls', function() {
+
+    var str = '', deferred, msg;
+
+    api.cors(false);
+    api.connect('GET /status');
+
+    for(var i = 0; i < 5000; i++) {
+      str += 'a';
+    }
+
+    deferred = api.getStatus({ q: str });
+
+    deferred.fail(function() {
+      msg = arguments[0];
+    });
+
+    equal(capturedRequests.length, 0, 'Get requests > 4091 chars cannot be made');
+    equal(msg, 'Error: Max URL length exceeded!', 'Error message is set.');
+
+  });
+
+
+  test('massive GET urls with failsafe', function() {
+
+    var msg,
+        str = '',
+        deferred,
+        deferredCount = 0,
+        successCount  = 0,
+        errorCount    = 0,
+        completeCount = 0;
+
+    api.cors(false);
+    api.connect('GET /status');
+
+    for(var i = 0; i < 5000; i++) {
+      str += 'a';
+    }
+
+    deferred = api.getStatus({ q: str }, {
+      sizeError: function(url, params) {
+        var one = { url: url, params: {} };
+        var two = { url: url, params: {} };
+        one.params = params.q.slice(0, Math.floor(params.q.length / 2));
+        two.params = params.q.slice(Math.floor(params.q.length / 2));
+        return [one, two];
+      },
+      error: function() {
+        errorCount++;
+      },
+      complete: function() {
+        completeCount++;
+      },
+      success: function() {
+        successCount++;
+      }
+    });
+
+    deferred.fail(function() {
+      deferredCount--;
+    });
+
+    deferred.done(function() {
+      deferredCount++;
+    });
+
+    equal(capturedRequests.length, 2, '1 request split into 2');
+
+    equal(deferredCount,  1,  'Done callback fired once');
+    equal(errorCount,     0,  'Error count should be 0');
+    equal(completeCount,  1,  'Complete count should be 2');
+    equal(successCount,   1,  'Success count should be 2');
+
+    equal(capturedRequests[capturedRequests.length - 1].params, str.slice(0, 2500), 'Request 1 first half')
+    equal(capturedRequests[capturedRequests.length - 2].params, str.slice(2500), 'Request 1 second half')
+
+  });
+
 
 })();
