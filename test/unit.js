@@ -936,8 +936,57 @@
 
   });
 
+  test('massive GET urls with simple callback', function() {
 
-  test('massive GET urls with failsafe', function() {
+    var str = '',
+        deferred,
+        deferredCount = 0,
+        successCount  = 0,
+        errorCount    = 0,
+        completeCount = 0;
+
+
+    api.cors(false);
+    api.connect('GET /status');
+
+    for(var i = 0; i < 5000; i++) {
+      str += 'a';
+    }
+
+    deferred = api.getStatus({ q: str }, {
+      sizeError: function() {
+        // Doing something cool
+      },
+      error: function() {
+        errorCount++;
+      },
+      complete: function() {
+        completeCount++;
+      },
+      success: function() {
+        successCount++;
+      }
+    });
+
+    deferred.fail(function() {
+      deferredCount--;
+    });
+
+    deferred.done(function() {
+      deferredCount++;
+    });
+
+    equal(deferredCount,  -1,  'Done callback fired once');
+    equal(errorCount,     1,  'Error count should be 0');
+    equal(completeCount,  0,  'Complete count should be 2');
+    equal(successCount,   0,  'Success count should be 2');
+
+    equal(capturedRequests.length, 0, 'Get requests > 4091 chars cannot be made');
+
+  });
+
+
+  test('massive GET urls with url split', function() {
 
     var msg,
         str = '',
