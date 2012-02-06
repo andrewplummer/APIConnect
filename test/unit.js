@@ -629,23 +629,6 @@
   });
 
 
-
-  test('api key', function() {
-    api.key('3h234lk2h432hl');
-    api.connect('home_timeline');
-    api.getHomeTimeline();
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { api_key: '3h234lk2h432hl' })
-    equal(api.key(), '3h234lk2h432hl', 'API key is retrieved');
-  });
-
-  test('api key override param', function() {
-    api.key('my_special_api_key', '3h234lk2h432hl');
-    api.connect('home_timeline');
-    api.getHomeTimeline();
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { my_special_api_key: '3h234lk2h432hl' })
-    equal(api.key(), '3h234lk2h432hl', 'API key is retrieved');
-  });
-
   test('caching', function() {
     api.connect('home_timeline');
     api.getHomeTimeline({ foo: 'bar' });
@@ -673,10 +656,10 @@
   test('allow options through constructor', function() {
 
     api = new APIInterface({
+      api_key: 'APIKEY',
       domain: 'foobar.com',
       protocol: 'https',
       port: 5002,
-      key: 'APIKEY',
       routes: [
         'GET statuses/home_timeline',
         'GET statuses/mentions',
@@ -716,10 +699,10 @@
   test('allow options through constructor with as override', function() {
 
     api = new APIInterface({
+      api_key: 'APIKEY',
       domain: 'foobar.com',
       protocol: 'https',
       port: 5002,
-      key: 'APIKEY',
       routes: [
         'GET foobar',
         'GET foobars AS whatever'
