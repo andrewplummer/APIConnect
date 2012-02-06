@@ -35,7 +35,7 @@
     equals(request.url, url, 'Last URL was: ' + url);
     equals(request.method, method, 'Last method was: ' + method);
     for(var key in params) {
-      equals(request.params[key], params[key], 'Params ' + key + ' was: ' + params[key]);
+      equals(String(request.params[key]), String(params[key]), 'Params ' + key + ' was: ' + params[key]);
       expectedParamsLength += 1;
     }
     for(var key in request.params) {
@@ -1041,6 +1041,31 @@
     equal(capturedRequests[capturedRequests.length - 2].params, str.slice(2500), 'Request 1 second half')
 
   });
+
+  test('params in routing objects', function() {
+    api.connect('GET /memory', { params: { skip: true }});
+    api.getMemory();
+    assertRouteCalled(api, 'http://domain/memory.json', 'GET', { skip: true })
+  });
+
+  test('params as part of connect string', function() {
+    api.connect('GET /memory PARAMS skip=true');
+    api.getMemory();
+    assertRouteCalled(api, 'http://domain/memory.json', 'GET', { skip: true })
+  });
+
+  test('with can also be used for params string', function() {
+    api.connect('GET /memory WITH skip=true');
+    api.getMemory();
+    assertRouteCalled(api, 'http://domain/memory.json', 'GET', { skip: true })
+  });
+
+  test('connect with WITH and AS', function() {
+    api.connect('GET /memory WITH skip=true AS foobar');
+    api.foobar();
+    assertRouteCalled(api, 'http://domain/memory.json', 'GET', { skip: true })
+  });
+
 
 
 })();
