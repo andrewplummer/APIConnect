@@ -11,17 +11,22 @@
       $(document).click(function() {
 
           var api = new APIInterface();
+          var token = 'AAACfWR99ZCZA4BAPLKMC2iMmKzOemezpTSFRE8TvIaPoCI3ALqQdiZAt5xagTRQRrdfuySQXakk7BtpSeOHeZBfpx5HcDKT3VKNFb5wWrwZDZD';
 
           api.domain('graph.facebook.com');
-          api.param('access_token', 'hahahah');
+          api.param('access_token', token);
           api.connect('GET /:user');
 
+          /*
           api.authorize('https://www.facebook.com/dialog/oauth', {
             client_id: 175205129256350,
-            redirect_uri: 'http://localhost:4000/foo.html'
+            redirect_uri: 'http://localhost:4002'
+          }).then(function(token) {
+            console.info('woohooo', token);
           });
-
           return;
+          */
+
           api.getUser('andrew.plummer', {
             //headers: headers
           }).then(function() {
