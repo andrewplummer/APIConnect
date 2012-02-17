@@ -80,7 +80,7 @@
     api.connect('foobar');
     api.getFoobar();
 
-    assertRouteCalled(api, 'https://twotter.com:5000/foobar.xml', 'GET')
+    assertRouteCalled(api, 'https://twotter.com:5000/foobar', 'GET')
 
   });
 
@@ -94,7 +94,7 @@
     equal(typeof api.destroyHomeTimeline, 'undefined', 'delete does not exist');
 
     api.getHomeTimeline();
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET')
+    assertRouteCalled(api, 'http://domain/home_timeline', 'GET')
 
   });
 
@@ -108,7 +108,7 @@
     equal(typeof api.destroyHomeTimeline, 'undefined', 'delete does not exist');
 
     api.createHomeTimeline();
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'POST')
+    assertRouteCalled(api, 'http://domain/home_timeline', 'POST')
 
   });
 
@@ -121,7 +121,7 @@
     equal(typeof api.destroyHomeTimeline, 'undefined', 'delete does not exist');
 
     api.updateHomeTimeline();
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'PUT')
+    assertRouteCalled(api, 'http://domain/home_timeline', 'PUT')
 
   });
 
@@ -134,7 +134,7 @@
     equal(typeof api.destroyHomeTimeline, 'function', 'delete exists');
 
     api.destroyHomeTimeline();
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'DELETE')
+    assertRouteCalled(api, 'http://domain/home_timeline', 'DELETE')
 
   });
 
@@ -162,7 +162,7 @@
       var method = api['get' + route[1]];
       equal(typeof method, 'function', route[0] + ' exists');
       method();
-      assertRouteCalled(api, 'http://domain/statuses/' + route[0] + '.json', 'GET');
+      assertRouteCalled(api, 'http://domain/statuses/' + route[0] + '', 'GET');
     });
 
   });
@@ -175,9 +175,9 @@
 
     equal(typeof api.getRetweetedBy, 'function', 'route exists');
     api.getRetweetedBy({ id: 18 });
-    assertRouteCalled(api, 'http://domain/statuses/18/retweeted_by.json', 'GET');
+    assertRouteCalled(api, 'http://domain/statuses/18/retweeted_by', 'GET');
     api.getRetweetedBy();
-    assertRouteCalled(api, 'http://domain/retweeted_by.json', 'GET');
+    assertRouteCalled(api, 'http://domain/retweeted_by', 'GET');
 
   });
 
@@ -191,16 +191,16 @@
     api.connect('moof');
 
     api.getProfile({ status_id: 15 });
-    assertRouteCalled(api, 'http://domain/statuses/15/profile.json', 'GET');
+    assertRouteCalled(api, 'http://domain/statuses/15/profile', 'GET');
     api.getProfile({ id: 15 });
-    assertRouteCalled(api, 'http://domain/profile.json', 'GET', { id: 15 });
+    assertRouteCalled(api, 'http://domain/profile', 'GET', { id: 15 });
 
     api.getMoof({ status_id: 15 });
-    assertRouteCalled(api, 'http://domain/moof.json', 'GET', { status_id: 15 });
+    assertRouteCalled(api, 'http://domain/moof', 'GET', { status_id: 15 });
     api.getMoof({ id: 15 });
-    assertRouteCalled(api, 'http://domain/moof.json', 'GET', { id: 15 });
+    assertRouteCalled(api, 'http://domain/moof', 'GET', { id: 15 });
     api.getMoof();
-    assertRouteCalled(api, 'http://domain/moof.json', 'GET');
+    assertRouteCalled(api, 'http://domain/moof', 'GET');
 
 
   });
@@ -211,11 +211,11 @@
     api.connect('statuses/:status_id');
 
     api.getStatus({ status_id: 15 });
-    assertRouteCalled(api, 'http://domain/statuses/15.json', 'GET');
+    assertRouteCalled(api, 'http://domain/statuses/15', 'GET');
     api.getStatus({ id: 15 });
-    assertRouteCalled(api, 'http://domain.json', 'GET', { id: 15 });
+    assertRouteCalled(api, 'http://domain', 'GET', { id: 15 });
     api.getStatus();
-    assertRouteCalled(api, 'http://domain.json', 'GET');
+    assertRouteCalled(api, 'http://domain', 'GET');
 
   });
 
@@ -225,22 +225,22 @@
     api.connect('goals/:goal_id/items/:item_id/sentences/:sentence_id');
 
     api.getSentence({ sentence_id: 15, item_id: 19, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15.json', 'GET');
+    assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15', 'GET');
 
     api.getSentence({ item_id: 19, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/items/19.json', 'GET');
+    assertRouteCalled(api, 'http://domain/goals/2/items/19', 'GET');
 
     api.getSentence({ goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2.json', 'GET');
+    assertRouteCalled(api, 'http://domain/goals/2', 'GET');
 
     api.getSentence({ sentence_id: 15, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/sentences/15.json', 'GET');
+    assertRouteCalled(api, 'http://domain/goals/2/sentences/15', 'GET');
 
     api.getSentence({ sentence_id: 15 });
-    assertRouteCalled(api, 'http://domain/sentences/15.json', 'GET');
+    assertRouteCalled(api, 'http://domain/sentences/15', 'GET');
 
     api.getSentence();
-    assertRouteCalled(api, 'http://domain.json', 'GET');
+    assertRouteCalled(api, 'http://domain', 'GET');
 
   });
 
@@ -252,16 +252,16 @@
     api.connect('goals/:goal_id');
 
     api.getSentence({ sentence_id: 15, item_id: 19, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15.json', 'GET');
+    assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15', 'GET');
 
     api.getItem({ item_id: 19, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/items/19.json', 'GET');
+    assertRouteCalled(api, 'http://domain/goals/2/items/19', 'GET');
 
     api.getGoal({ goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2.json', 'GET');
+    assertRouteCalled(api, 'http://domain/goals/2', 'GET');
 
     api.getGoal({ sentence_id: 15 });
-    assertRouteCalled(api, 'http://domain.json', 'GET', { sentence_id: 15 });
+    assertRouteCalled(api, 'http://domain', 'GET', { sentence_id: 15 });
 
   });
 
@@ -273,16 +273,16 @@
     api.connect('POST goals/:goal_id');
 
     api.createSentence({ sentence_id: 15, item_id: 19, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15.json', 'POST');
+    assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15', 'POST');
 
     api.createItem({ item_id: 19, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/items/19.json', 'POST');
+    assertRouteCalled(api, 'http://domain/goals/2/items/19', 'POST');
 
     api.createGoal({ goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2.json', 'POST');
+    assertRouteCalled(api, 'http://domain/goals/2', 'POST');
 
     api.createGoal({ sentence_id: 15 });
-    assertRouteCalled(api, 'http://domain.json', 'POST', { sentence_id: 15 });
+    assertRouteCalled(api, 'http://domain', 'POST', { sentence_id: 15 });
 
   });
 
@@ -293,16 +293,16 @@
     api.connect('DELETE goals/:goal_id');
 
     api.destroySentence({ sentence_id: 15, item_id: 19, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15.json', 'DELETE');
+    assertRouteCalled(api, 'http://domain/goals/2/items/19/sentences/15', 'DELETE');
 
     api.destroyItem({ item_id: 19, goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2/items/19.json', 'DELETE');
+    assertRouteCalled(api, 'http://domain/goals/2/items/19', 'DELETE');
 
     api.destroyGoal({ goal_id: 2 });
-    assertRouteCalled(api, 'http://domain/goals/2.json', 'DELETE');
+    assertRouteCalled(api, 'http://domain/goals/2', 'DELETE');
 
     api.destroyGoal({ sentence_id: 15 });
-    assertRouteCalled(api, 'http://domain.json', 'DELETE', { sentence_id: 15 });
+    assertRouteCalled(api, 'http://domain', 'DELETE', { sentence_id: 15 });
 
   });
 
@@ -311,16 +311,16 @@
     api.resource('tweet');
 
     api.getTweet();
-    assertRouteCalled(api, 'http://domain/tweet.json', 'GET');
+    assertRouteCalled(api, 'http://domain/tweet', 'GET');
 
     api.createTweet();
-    assertRouteCalled(api, 'http://domain/tweet.json', 'POST');
+    assertRouteCalled(api, 'http://domain/tweet', 'POST');
 
     api.updateTweet();
-    assertRouteCalled(api, 'http://domain/tweet.json', 'PUT');
+    assertRouteCalled(api, 'http://domain/tweet', 'PUT');
 
     api.destroyTweet();
-    assertRouteCalled(api, 'http://domain/tweet.json', 'DELETE');
+    assertRouteCalled(api, 'http://domain/tweet', 'DELETE');
 
     equal(typeof api.getTweets, 'undefined', 'index does not exist');
 
@@ -332,26 +332,26 @@
     api.resource('tweets');
 
     api.getTweet({ id: 3 });
-    assertRouteCalled(api, 'http://domain/tweets/3.json', 'GET');
+    assertRouteCalled(api, 'http://domain/tweets/3', 'GET');
 
     api.getTweet();
-    assertRouteCalled(api, 'http://domain.json', 'GET');
+    assertRouteCalled(api, 'http://domain', 'GET');
 
     api.createTweet();
-    assertRouteCalled(api, 'http://domain/tweets.json', 'POST');
+    assertRouteCalled(api, 'http://domain/tweets', 'POST');
 
     api.updateTweet({ id: 3 });
-    assertRouteCalled(api, 'http://domain/tweets/3.json', 'PUT');
+    assertRouteCalled(api, 'http://domain/tweets/3', 'PUT');
 
     api.updateTweet();
-    assertRouteCalled(api, 'http://domain.json', 'PUT');
+    assertRouteCalled(api, 'http://domain', 'PUT');
 
     api.destroyTweet({ id: 3 });
-    assertRouteCalled(api, 'http://domain/tweets/3.json', 'DELETE');
+    assertRouteCalled(api, 'http://domain/tweets/3', 'DELETE');
 
     // Also index route
     api.getTweets();
-    assertRouteCalled(api, 'http://domain/tweets.json', 'GET');
+    assertRouteCalled(api, 'http://domain/tweets', 'GET');
 
   });
 
@@ -361,26 +361,26 @@
     api.resource('equipment', { collection: true });
 
     api.getEquipment({ id: 3 });
-    assertRouteCalled(api, 'http://domain/equipment/3.json', 'GET');
+    assertRouteCalled(api, 'http://domain/equipment/3', 'GET');
 
     // Doubles as index route when collection: true
     api.getEquipment();
-    assertRouteCalled(api, 'http://domain/equipment.json', 'GET');
+    assertRouteCalled(api, 'http://domain/equipment', 'GET');
 
     api.createEquipment();
-    assertRouteCalled(api, 'http://domain/equipment.json', 'POST');
+    assertRouteCalled(api, 'http://domain/equipment', 'POST');
 
     api.updateEquipment({ id: 3 });
-    assertRouteCalled(api, 'http://domain/equipment/3.json', 'PUT');
+    assertRouteCalled(api, 'http://domain/equipment/3', 'PUT');
 
     api.updateEquipment();
-    assertRouteCalled(api, 'http://domain.json', 'PUT');
+    assertRouteCalled(api, 'http://domain', 'PUT');
 
     api.destroyEquipment({ id: 3 });
-    assertRouteCalled(api, 'http://domain/equipment/3.json', 'DELETE');
+    assertRouteCalled(api, 'http://domain/equipment/3', 'DELETE');
 
     api.destroyEquipment();
-    assertRouteCalled(api, 'http://domain.json', 'DELETE');
+    assertRouteCalled(api, 'http://domain', 'DELETE');
 
   });
 
@@ -390,10 +390,10 @@
     api.connect('tweets/:tweet_id', { collection: true });
 
     api.getTweet({ tweet_id: 3 });
-    assertRouteCalled(api, 'http://domain/tweets/3.json', 'GET');
+    assertRouteCalled(api, 'http://domain/tweets/3', 'GET');
 
     api.getTweet();
-    assertRouteCalled(api, 'http://domain/tweets.json', 'GET');
+    assertRouteCalled(api, 'http://domain/tweets', 'GET');
 
   });
 
@@ -405,10 +405,10 @@
     });
 
     api.getStatus({ tweet_id: 3 });
-    assertRouteCalled(api, 'http://domain/tweets/3/status.json', 'GET');
+    assertRouteCalled(api, 'http://domain/tweets/3/status', 'GET');
 
     api.getStatus();
-    assertRouteCalled(api, 'http://domain/status.json', 'GET');
+    assertRouteCalled(api, 'http://domain/status', 'GET');
 
   });
 
@@ -419,16 +419,16 @@
     });
 
     api.getStatus();
-    assertRouteCalled(api, 'http://domain/status.json', 'GET')
+    assertRouteCalled(api, 'http://domain/status', 'GET')
 
     api.getStatus({ foo_id: 5 });
-    assertRouteCalled(api, 'http://domain/foo/5/status.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foo/5/status', 'GET')
 
     api.getStatus({ foo_id: 5, bar_id: 7 });
-    assertRouteCalled(api, 'http://domain/foo/5/bar/7/status.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foo/5/bar/7/status', 'GET')
 
     api.getStatus({ bar_id: 7 });
-    assertRouteCalled(api, 'http://domain/bar/7/status.json', 'GET')
+    assertRouteCalled(api, 'http://domain/bar/7/status', 'GET')
 
 
   });
@@ -438,16 +438,16 @@
     api.resource('foo/:foo_id/bar/:bar_id/status');
 
     api.getStatus();
-    assertRouteCalled(api, 'http://domain/status.json', 'GET')
+    assertRouteCalled(api, 'http://domain/status', 'GET')
 
     api.getStatus({ foo_id: 5 });
-    assertRouteCalled(api, 'http://domain/foo/5/status.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foo/5/status', 'GET')
 
     api.getStatus({ foo_id: 5, bar_id: 7 });
-    assertRouteCalled(api, 'http://domain/foo/5/bar/7/status.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foo/5/bar/7/status', 'GET')
 
     api.getStatus({ bar_id: 7 });
-    assertRouteCalled(api, 'http://domain/bar/7/status.json', 'GET')
+    assertRouteCalled(api, 'http://domain/bar/7/status', 'GET')
 
 
   });
@@ -475,28 +475,28 @@
 
 
     api.getRetweetedBy({ id: 13 });
-    assertRouteCalled(api, 'http://domain/statuses/13/retweeted_by.json', 'GET');
+    assertRouteCalled(api, 'http://domain/statuses/13/retweeted_by', 'GET');
 
     api.getRetweetedBy({ status_id: 13 });
-    assertRouteCalled(api, 'http://domain/statuses/13/retweeted_by.json', 'GET');
+    assertRouteCalled(api, 'http://domain/statuses/13/retweeted_by', 'GET');
 
     api.getIds({ id: 13 });
-    assertRouteCalled(api, 'http://domain/statuses/13/retweeted_by/ids.json', 'GET');
+    assertRouteCalled(api, 'http://domain/statuses/13/retweeted_by/ids', 'GET');
 
     api.destroyTweet({ id: 13 });
-    assertRouteCalled(api, 'http://domain/statuses/destroy/13.json', 'POST');
+    assertRouteCalled(api, 'http://domain/statuses/destroy/13', 'POST');
 
     api.createRetweet({ id: 13 });
-    assertRouteCalled(api, 'http://domain/statuses/retweet/13.json', 'POST');
+    assertRouteCalled(api, 'http://domain/statuses/retweet/13', 'POST');
 
     api.updateStatus();
-    assertRouteCalled(api, 'http://domain/statuses/update.json', 'POST');
+    assertRouteCalled(api, 'http://domain/statuses/update', 'POST');
 
     api.updateStatusWithMedia();
-    assertRouteCalled(api, 'http://domain/statuses/update_with_media.json', 'POST');
+    assertRouteCalled(api, 'http://domain/statuses/update_with_media', 'POST');
 
     api.getOembed();
-    assertRouteCalled(api, 'http://domain/statuses/oembed.json', 'GET');
+    assertRouteCalled(api, 'http://domain/statuses/oembed', 'GET');
 
   });
 
@@ -569,13 +569,13 @@
     });
 
     api.getItems({ goal_id: 3 });
-    assertRouteCalled(api, 'http://domain/goals/3/items.json', 'GET');
+    assertRouteCalled(api, 'http://domain/goals/3/items', 'GET');
 
     api.getItems({ user_id: 3 });
-    assertRouteCalled(api, 'http://domain/users/3/items.json', 'GET');
+    assertRouteCalled(api, 'http://domain/users/3/items', 'GET');
 
     api.getItems();
-    assertRouteCalled(api, 'http://domain/items.json', 'GET');
+    assertRouteCalled(api, 'http://domain/items', 'GET');
 
   });
 
@@ -604,16 +604,16 @@
     api.connect('cats');
 
     api.getCats();
-    assertRouteCalled(api, 'http://domain/cats.json', 'GET');
+    assertRouteCalled(api, 'http://domain/cats', 'GET');
 
     api.getCats({ neighborhood_id: 5 });
-    assertRouteCalled(api, 'http://domain/neighborhoods/5/cats.json', 'GET');
+    assertRouteCalled(api, 'http://domain/neighborhoods/5/cats', 'GET');
 
     api.getCats({ home_id: 5 });
-    assertRouteCalled(api, 'http://domain/homes/5/cats.json', 'GET');
+    assertRouteCalled(api, 'http://domain/homes/5/cats', 'GET');
 
     api.getCats({ neighborhood_id: 18, home_id: 5 });
-    assertRouteCalled(api, 'http://domain/neighborhoods/18/homes/5/cats.json', 'GET');
+    assertRouteCalled(api, 'http://domain/neighborhoods/18/homes/5/cats', 'GET');
 
 
   });
@@ -623,7 +623,7 @@
     api.param('moo', 'car');
     api.connect('home_timeline');
     api.getHomeTimeline();
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { foo: 'bar', moo: 'car' })
+    assertRouteCalled(api, 'http://domain/home_timeline', 'GET', { foo: 'bar', moo: 'car' })
     equal(api.foo(), 'bar', 'Param foo can be retrieved');
     equal(api.moo(), 'car', 'Param moo can be retrieved');
   });
@@ -633,7 +633,7 @@
     api.connect('home_timeline');
     api.getHomeTimeline({ foo: 'bar' });
 
-    assertRouteCalled(api, 'http://domain/home_timeline.json', 'GET', { foo: 'bar' })
+    assertRouteCalled(api, 'http://domain/home_timeline', 'GET', { foo: 'bar' })
     equal(capturedRequests.length, 1, 'Captured requests is 1');
 
     api.getHomeTimeline({ foo: 'bar' }, { cache: true });
@@ -690,7 +690,7 @@
       var path = r[0];
       var method = 'get' + r[1];
       api[method]();
-      assertRouteCalled(api, 'https://foobar.com:5002/statuses/' + path + '.json', 'GET', { api_key: 'APIKEY' })
+      assertRouteCalled(api, 'https://foobar.com:5002/statuses/' + path + '', 'GET', { api_key: 'APIKEY' })
     });
 
   });
@@ -710,10 +710,10 @@
     });
 
     api.getFoobar();
-    assertRouteCalled(api, 'https://foobar.com:5002/foobar.json', 'GET', { api_key: 'APIKEY' })
+    assertRouteCalled(api, 'https://foobar.com:5002/foobar', 'GET', { api_key: 'APIKEY' })
 
     api.whatever();
-    assertRouteCalled(api, 'https://foobar.com:5002/foobars.json', 'GET', { api_key: 'APIKEY' })
+    assertRouteCalled(api, 'https://foobar.com:5002/foobars', 'GET', { api_key: 'APIKEY' })
 
   });
 
@@ -730,13 +730,13 @@
     });
 
     api.getStatus();
-    assertRouteCalled(api, 'http://foobar.com/status.json', 'GET')
+    assertRouteCalled(api, 'http://foobar.com/status', 'GET')
 
     api.updatePoo({ foo_id: 19, maw: 'hoho' });
-    assertRouteCalled(api, 'http://foobar.com/foo/19/poo.json', 'PUT', { maw: 'hoho' })
+    assertRouteCalled(api, 'http://foobar.com/foo/19/poo', 'PUT', { maw: 'hoho' })
 
     api.destroyCat({ id: 3, foo_id: 19 });
-    assertRouteCalled(api, 'http://foobar.com/foo/19/cats/3.json', 'DELETE')
+    assertRouteCalled(api, 'http://foobar.com/foo/19/cats/3', 'DELETE')
 
   });
 
@@ -772,10 +772,10 @@
     api.connect('POST foobar');
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'GET' })
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'GET' })
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
 
   });
 
@@ -788,18 +788,18 @@
 
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'POST')
+    assertRouteCalled(api, 'http://domain/foobar', 'POST')
 
     api.cors(false);
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'GET' })
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'GET' })
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' });
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' });
 
   });
 
@@ -813,10 +813,10 @@
     api.connect('POST foobar');
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'POST')
+    assertRouteCalled(api, 'http://domain/foobar', 'POST')
 
   });
 
@@ -830,10 +830,10 @@
     api.connect('POST foobar');
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
 
   });
 
@@ -846,18 +846,18 @@
     api.connect('POST foobar');
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'POST')
+    assertRouteCalled(api, 'http://domain/foobar', 'POST')
 
     api.cors(false);
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
 
   });
 
@@ -868,18 +868,18 @@
     api.connect('POST foobar');
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'POST')
+    assertRouteCalled(api, 'http://domain/foobar', 'POST')
 
     api.cors(false);
 
     api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
 
     api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar.json', 'GET', { _method: 'POST' })
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
 
   });
 
@@ -890,10 +890,10 @@
     api.connect('PUT statuses/favorite');
 
     api.createFavorite();
-    assertRouteCalled(api, 'http://domain/statuses/favorite.json', 'POST')
+    assertRouteCalled(api, 'http://domain/statuses/favorite', 'POST')
 
     api.updateFavorite();
-    assertRouteCalled(api, 'http://domain/statuses/favorite.json', 'PUT')
+    assertRouteCalled(api, 'http://domain/statuses/favorite', 'PUT')
 
   });
 
@@ -1028,27 +1028,53 @@
   test('params in routing objects', function() {
     api.connect('GET /memory', { params: { skip: true }});
     api.getMemory();
-    assertRouteCalled(api, 'http://domain/memory.json', 'GET', { skip: true })
+    assertRouteCalled(api, 'http://domain/memory', 'GET', { skip: true })
   });
 
   test('params as part of connect string', function() {
     api.connect('GET /memory PARAMS skip=true');
     api.getMemory();
-    assertRouteCalled(api, 'http://domain/memory.json', 'GET', { skip: true })
+    assertRouteCalled(api, 'http://domain/memory', 'GET', { skip: true })
   });
 
   test('with can also be used for params string', function() {
     api.connect('GET /memory WITH skip=true');
     api.getMemory();
-    assertRouteCalled(api, 'http://domain/memory.json', 'GET', { skip: true })
+    assertRouteCalled(api, 'http://domain/memory', 'GET', { skip: true })
   });
 
   test('connect with WITH and AS', function() {
     api.connect('GET /memory WITH skip=true AS foobar');
     api.foobar();
-    assertRouteCalled(api, 'http://domain/memory.json', 'GET', { skip: true })
+    assertRouteCalled(api, 'http://domain/memory', 'GET', { skip: true })
   });
 
+  test('connect only 1 param uses that param for the name', function() {
+    api.connect('GET /:username');
+    api.getUsername({ username: 'moo' });
+    assertRouteCalled(api, 'http://domain/moo', 'GET')
+  });
+
+  test('string can substitute for params object', function() {
+    api.connect('GET /:username');
+    api.getUsername('moo');
+    assertRouteCalled(api, 'http://domain/moo', 'GET')
+  });
+
+
+  test('format can append the format to the string', function() {
+    api.connect('GET /foobar');
+    api.format('json', true);
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.json', 'GET')
+  });
+
+  test('appended format can differ from data format', function() {
+    api.connect('GET /foobar');
+    api.format('json', 'asp');
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar.asp', 'GET')
+  });
 
 
 })();
