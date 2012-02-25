@@ -11,11 +11,15 @@
         background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#350a0a), to(#180505));
         height: 100%;
       }
+
+      body {
+        width: 100%;
+        margin: 0;
+      }
       pre {
         background: none;
         border: none;
         padding: 30px;
-        width: 100%;
         font-size: 25px;
         font-family: Courier;
         outline: none;
@@ -143,7 +147,7 @@ api.domain('api.iknow.jp');
 api.cors(false);
 
 // Allow optional contexts
-api.connect('goals/:goal_id/items');
+api.connect('goals/:goal_id/items.json');
 
 api.getItems({ goal_id: 910 }).then(showItems);
   </pre>

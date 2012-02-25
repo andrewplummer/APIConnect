@@ -1147,5 +1147,17 @@
     assertRouteCalled(api, 'http://domain/13', 'GET')
   });
 
+  test('route allows format', function() {
+    api.connect('GET /items.json');
+    api.getItems();
+    assertRouteCalled(api, 'http://domain/items.json', 'GET')
+  });
+
+  test('route allows format with fragment', function() {
+    api.connect('GET /:name.json');
+    api.getName({ name: 'jackson' });
+    assertRouteCalled(api, 'http://domain/jackson.json', 'GET')
+  });
+
 
 })();
