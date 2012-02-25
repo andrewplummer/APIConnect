@@ -193,7 +193,6 @@ api.destroyFavorite({ username: 'budday', id: 3 });
   <pre>
 var api = new APIInterface();
 api.domain('andrewplummer.com');
-api.format(false);
 
 api.connect('recipes');
 
@@ -204,7 +203,6 @@ api.getRecipes({}).then(showResults);
 api = api || new APIInterface();
 
 api.domain('andrewplummer.com');
-api.format(false);
 
 api.connect('recipes');
 

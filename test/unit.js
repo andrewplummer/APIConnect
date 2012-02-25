@@ -1159,5 +1159,12 @@
     assertRouteCalled(api, 'http://domain/jackson.json', 'GET')
   });
 
+  test('route allows format with resource', function() {
+    api.resource('cats.json');
+    api.getCats();
+    assertRouteCalled(api, 'http://domain/cats.json', 'GET')
+  });
+
+
 
 })();
