@@ -28,7 +28,7 @@
 
     params = params || {};
 
-    if(overrideIfRequestIsJSONP(params, method, context.defaultOptions.methodOverride)) {
+    if(overrideIfRequestIsJSONP(params, method, context.defaultOptions.getOverride)) {
       params._method = method;
       method = 'GET';
     }
@@ -624,8 +624,6 @@
     api.connect('home_timeline');
     api.getHomeTimeline();
     assertRouteCalled(api, 'http://domain/home_timeline', 'GET', { foo: 'bar', moo: 'car' })
-    equal(api.foo(), 'bar', 'Param foo can be retrieved');
-    equal(api.moo(), 'car', 'Param moo can be retrieved');
   });
 
 
@@ -764,9 +762,9 @@
   });
 
 
-  test('methodOverride | always', function() {
+  test('getOverride | always', function() {
 
-    api.methodOverride('always');
+    api.getOverride('always');
 
     api.connect('foobar');
     api.connect('POST foobar');
@@ -779,9 +777,9 @@
 
   });
 
-  test('methodOverride | jsonp', function() {
+  test('getOverride | jsonp', function() {
 
-    api.methodOverride('jsonp');
+    api.getOverride('jsonp');
 
     api.connect('foobar');
     api.connect('POST foobar');
@@ -804,9 +802,9 @@
   });
 
 
-  test('methodOverride | never', function() {
+  test('getOverride | never', function() {
 
-    api.methodOverride('never');
+    api.getOverride('never');
     api.cors(false);
 
     api.connect('foobar');
@@ -822,9 +820,9 @@
 
 
 
-  test('methodOverride | always-except-get', function() {
+  test('getOverride | always-except-get', function() {
 
-    api.methodOverride('always-except-get');
+    api.getOverride('always-except-get');
 
     api.connect('foobar');
     api.connect('POST foobar');
@@ -838,31 +836,9 @@
   });
 
 
-  test('methodOverride | jsonp-except-get', function() {
+  test('getOverride | jsonp-except-get', function() {
 
-    api.methodOverride('jsonp-except-get');
-
-    api.connect('foobar');
-    api.connect('POST foobar');
-
-    api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar', 'GET')
-
-    api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar', 'POST')
-
-    api.cors(false);
-
-    api.getFoobar();
-    assertRouteCalled(api, 'http://domain/foobar', 'GET')
-
-    api.createFoobar();
-    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
-
-  });
-
-
-  test('methodOverride | default is jsonp-except-get', function() {
+    api.getOverride('jsonp-except-get');
 
     api.connect('foobar');
     api.connect('POST foobar');
@@ -882,6 +858,95 @@
     assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
 
   });
+
+
+  test('getOverride | default is jsonp-except-get', function() {
+
+    api.connect('foobar');
+    api.connect('POST foobar');
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'POST')
+
+    api.cors(false);
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
+
+  });
+
+  test('postOverride | default is false', function() {
+
+    api.resource('foobar');
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'POST')
+
+    api.updateFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'PUT')
+
+    api.destroyFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'DELETE')
+
+    api.cors(false);
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
+
+    api.updateFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'PUT' })
+
+    api.destroyFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'DELETE' })
+
+  });
+
+
+  test('postOverride | always', function() {
+
+    api.resource('foobar');
+    api.postOverride(true);
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'POST')
+
+    api.updateFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'POST', { _method: 'PUT' })
+
+    api.destroyFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'POST', { _method: 'DELETE' })
+
+    api.cors(false);
+
+    api.getFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET')
+
+    api.createFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'POST' })
+
+    api.updateFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'PUT' })
+
+    api.destroyFoobar();
+    assertRouteCalled(api, 'http://domain/foobar', 'GET', { _method: 'DELETE' })
+
+  });
+
 
 
   test('tricking with an extra slash', function() {
