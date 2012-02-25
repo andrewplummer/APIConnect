@@ -80,12 +80,12 @@
     <div class="tabs"></div>
   <pre>
 // Create an instance
-var api = new APIInterface();
+var api = new APIConnect();
 
   </pre>
   <pre>
 // Create an instance
-var api = new APIInterface();
+var api = new APIConnect();
 
 // Set the domain
 api.domain('search.twitter.com');
@@ -93,32 +93,32 @@ api.domain('search.twitter.com');
   </pre>
   <pre>
 // Create an instance
-var api = new APIInterface();
-
-// Set the domain
-api.domain('search.twitter.com');
-
-// Connect the route
-api.connect('search');
-
-  </pre>
-  <pre>
-// Create an instance
-var api = new APIInterface();
+var api = new APIConnect();
 
 // Set the domain
 api.domain('search.twitter.com');
 
 // Connect the route
-api.connect('search');
+api.connect('search.json');
+
+  </pre>
+  <pre>
+// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// Connect the route
+api.connect('search.json');
 
 // Run the route
 api.getSearch();
   </pre>
   <pre>
-var api = new APIInterface();
+var api = new APIConnect();
 api.domain('search.twitter.com');
-api.connect('search');
+api.connect('search.json');
 
 // Only support JSONP
 api.cors(false);
@@ -133,16 +133,16 @@ api.getSearch({ q: 'cookpad' }, {
 });
   </pre>
   <pre>
-var api = new APIInterface();
+var api = new APIConnect();
 api.domain('search.twitter.com');
-api.connect('search');
+api.connect('search.json');
 api.cors(false);
 
 // Returns jQuery deferred objects
 api.getSearch({ q: 'cookpad' }).then(showResults);
   </pre>
   <pre>
-var api = new APIInterface();
+var api = new APIConnect();
 api.domain('api.iknow.jp');
 api.cors(false);
 
@@ -152,7 +152,7 @@ api.connect('goals/:goal_id/items.json');
 api.getItems({ goal_id: 910 }).then(showItems);
   </pre>
   <pre>
-var api = new APIInterface();
+var api = new APIConnect();
 api.domain('api.twitter.com');
 
 // Alternate HTTP methods
@@ -161,7 +161,7 @@ api.connect('POST :username/favorites');
 api.createFavorites({ username: 'budday' });
   </pre>
   <pre>
-var api = new APIInterface();
+var api = new APIConnect();
 api.domain('api.twitter.com');
 
 // RESTful resources
@@ -174,7 +174,7 @@ api.destroyFavorite({ username: 'budday' });
 
   </pre>
   <pre>
-var api = new APIInterface();
+var api = new APIConnect();
 api.domain('api.twitter.com');
 
 // "favorites" indicates a collection
@@ -191,7 +191,7 @@ api.destroyFavorite({ username: 'budday', id: 3 });
 
   </pre>
   <pre>
-var api = new APIInterface();
+var api = new APIConnect();
 api.domain('andrewplummer.com');
 
 api.connect('recipes');
@@ -200,7 +200,7 @@ api.connect('recipes');
 api.getRecipes({}).then(showResults);
   </pre>
   <pre>
-api = api || new APIInterface();
+api = api || new APIConnect();
 
 api.domain('andrewplummer.com');
 
@@ -211,7 +211,7 @@ api.getRecipes({}, { cache: true }).then(showResults);
   </pre>
   <pre>
 // All routes/options/params in the constructor
-var api = new APIInterface({
+var api = new APIConnect({
   domain   : 'api.twitter.com',
   protocol : 'https',
   cors     :  false,
@@ -226,7 +226,7 @@ api.destroyMessage({ id: 7 });
   </pre>
   <pre>
 // Future??
-var api = new APIInterface();
+var api = new APIConnect();
 
 api.getManifest(function() {
 
@@ -241,7 +241,7 @@ api.getManifest(function() {
   <button>Punch it, Chewie</button>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script src="../lib/main.js"></script>
-    <!--<script src="https://raw.github.com/andrewplummer/APIInterface/master/lib/main.js"></script>-->
+    <!--<script src="https://raw.github.com/andrewplummer/APIConnect/master/lib/main.js"></script>-->
     <script src="sh_main.min.js" type="text/javascript"></script>
     <script src="sh_javascript.min.js" type="text/javascript"></script>
     <script type="text/javascript">

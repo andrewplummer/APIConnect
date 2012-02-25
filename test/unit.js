@@ -56,9 +56,9 @@
     counter++;
   }
 
-  module('APIInterface', {
+  module('APIConnect', {
     setup: function() {
-      api = new APIInterface();
+      api = new APIConnect();
       api.domain('domain');
       capturedRequests = [];
       counter = 0;
@@ -66,8 +66,8 @@
   });
 
   test('Domain Setup', function() {
-    strictEqual(api.domain('test'), api, 'APIInterface#domain setting should return the instance');
-    equal(api.domain(), 'test', ' APIInterface#domain calling without arguments should return the field');
+    strictEqual(api.domain('test'), api, 'APIConnect#domain setting should return the instance');
+    equal(api.domain(), 'test', ' APIConnect#domain calling without arguments should return the field');
   });
 
   test('Custom Setters', function() {
@@ -653,7 +653,7 @@
 
   test('allow options through constructor', function() {
 
-    api = new APIInterface({
+    api = new APIConnect({
       api_key: 'APIKEY',
       domain: 'foobar.com',
       protocol: 'https',
@@ -696,7 +696,7 @@
 
   test('allow options through constructor with as override', function() {
 
-    api = new APIInterface({
+    api = new APIConnect({
       api_key: 'APIKEY',
       domain: 'foobar.com',
       protocol: 'https',
@@ -718,7 +718,7 @@
 
   test('allow resources through constructor', function() {
 
-    api = new APIInterface({
+    api = new APIConnect({
       domain: 'foobar.com',
       resources: [
         'status',
@@ -740,7 +740,7 @@
 
   test('allow resources through constructor with overrides', function() {
 
-    api = new APIInterface({
+    api = new APIConnect({
       domain: 'foobar.com',
       resources: [
         'statuses ONLY index,destroy',

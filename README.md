@@ -1,4 +1,4 @@
-# APIInterface
+# APIConnect
 
 This class creates a very easy and intuitive way to interact with APIs,
 most commonly those hosted on other domains.
@@ -6,7 +6,7 @@ most commonly those hosted on other domains.
 Setup:
 
 ```
-var twitter = new APIInterface();
+var twitter = new APIConnect();
 twitter.domain('api.twitter.com');
 twitter.get('statuses/home_timeline');
 twitter.getHomeTimeline();
@@ -36,7 +36,7 @@ twitter.getHomeTimeline({}, {
 });
 ```
 
-API calls will also pass back jQuery deferred objects, so these can be used to interface as well:
+API calls will also pass back jQuery deferred objects, so these can be used as well:
 
 ```
 twitter.getHomeTimeline().then(function() {
