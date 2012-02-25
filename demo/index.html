@@ -116,6 +116,19 @@ api.connect('search.json');
 api.getSearch();
   </pre>
   <pre>
+// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// Connect the route
+api.connect('search.json');
+
+// Pass some params
+api.getSearch({ q: 'cookpad' });
+  </pre>
+  <pre>
 var api = new APIConnect();
 api.domain('search.twitter.com');
 api.connect('search.json');
@@ -240,7 +253,7 @@ api.getManifest(function() {
   <div id="stage"></div>
   <button>Punch it, Chewie</button>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-    <script src="../lib/main.js"></script>
+    <script src="../lib/apiconnect.js"></script>
     <!--<script src="https://raw.github.com/andrewplummer/APIConnect/master/lib/main.js"></script>-->
     <script src="sh_main.min.js" type="text/javascript"></script>
     <script src="sh_javascript.min.js" type="text/javascript"></script>
