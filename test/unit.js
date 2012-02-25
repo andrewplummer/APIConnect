@@ -1141,5 +1141,11 @@
     assertRouteCalled(api, 'http://domain/foobar.asp', 'GET')
   });
 
+  test('method name does not use _id', function() {
+    api.connect('GET /:post_id');
+    api.getPost({ post_id: 13 });
+    assertRouteCalled(api, 'http://domain/13', 'GET')
+  });
+
 
 })();
