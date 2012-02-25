@@ -36,6 +36,13 @@
       .hidden {
         display: none;
       }
+      .dim,
+      .dim * {
+        color: #ccc !important;
+      }
+      .dim {
+        opacity: 0.3;
+      }
       .tabs {
       }
       .tabs p {
@@ -54,7 +61,7 @@
       }
       #stage {
         position: absolute;
-        top: 10px;
+        top: 50px;
         right: 10px;
         width: 30%;
         font-size: 17px;
@@ -84,88 +91,198 @@ var api = new APIConnect();
 
   </pre>
   <pre>
-// Create an instance
-var api = new APIConnect();
+<span class="dim">// Create an instance
+var api = new APIConnect();</span>
 
 // Set the domain
 api.domain('search.twitter.com');
 
   </pre>
   <pre>
-// Create an instance
+<span class="dim">// Create an instance
 var api = new APIConnect();
 
 // Set the domain
-api.domain('search.twitter.com');
+api.domain('search.twitter.com');</span>
 
 // Connect the route
-api.connect('search.json');
+api.connect('search');
 
   </pre>
   <pre>
-// Create an instance
+<span class="dim">// Create an instance
 var api = new APIConnect();
 
 // Set the domain
 api.domain('search.twitter.com');
 
-// Connect the route
-api.connect('search.json');
+// With a format
+api.connect('search</span>.json<span class="dim">');</span>
+
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');</span>
 
 // Run the route
 api.getSearch();
   </pre>
   <pre>
-// Create an instance
+<span class="dim">// Create an instance
 var api = new APIConnect();
 
 // Set the domain
 api.domain('search.twitter.com');
 
-// Connect the route
+// With a format
 api.connect('search.json');
 
-// Pass some params
-api.getSearch({ q: 'cookpad' });
+// Run the route
+api.getSearch(</span>{ q: 'cookpad' }<span class="dim">);</span> // With params
   </pre>
   <pre>
+<span class="dim">// Create an instance
 var api = new APIConnect();
+
+// Set the domain
 api.domain('search.twitter.com');
+
+// With a format
 api.connect('search.json');
 
-// Only support JSONP
+// Run the route
+api.getSearch({ q: 'cookpad' }</span>, { success: showResults }); // And a callback
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');</span>
+
+// Twitter only supports JSONP
 api.cors(false);
 
-api.getSearch({ q: 'cookpad' }, {
+<span class="dim">// And a callback
+api.getSearch({ q: 'cookpad' }, { success: showResults });</span>
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
 
-  // All ajax options passed on to jQuery
-  success: function(data) {
-    showResults(data);
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');
+
+// Twitter only supports JSONP
+api.cors(false);</span>
+
+// Here we go!
+api.getSearch({ q: 'cookpad' }, {
+  success: showResults
+});
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');
+
+// Twitter only supports JSONP
+api.cors(false);
+
+// Here we go!
+api.getSearch({ q: 'cookpad' }, {
+  success: showResults,</span>
+
+  // All options are handed to $.ajax
+  complete: function() {
+    alert('Done!');
   }
 
 });
   </pre>
   <pre>
-var api = new APIConnect();
-api.domain('search.twitter.com');
-api.connect('search.json');
-api.cors(false);
-
-// Returns jQuery deferred objects
-api.getSearch({ q: 'cookpad' }).then(showResults);
+// Round 2
   </pre>
   <pre>
+// Round 2
+
+// Create the instance
 var api = new APIConnect();
+  </pre>
+  <pre>
+// Round 2
+
+<span class="dim">// Create the instance
+var api = new APIConnect();</span>
+
+// Set the domain
 api.domain('api.iknow.jp');
+  </pre>
+  <pre>
+// Round 2
+
+<span class="dim">// Create the instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('api.iknow.jp');</span>
+
+// Turn off cors
+api.cors(false);
+  </pre>
+  <pre>
+// Round 2
+
+<span class="dim">// Create the instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('api.iknow.jp');
+
+// Turn off cors
+api.cors(false);</span>
+
+// Connect the route with optional context
+api.connect('goals/:goal_id/items.json');
+  </pre>
+  <pre>
+// Round 2
+
+<span class="dim">// Create the instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('api.iknow.jp');
+
+// Turn off cors
 api.cors(false);
 
-// Allow optional contexts
-api.connect('goals/:goal_id/items.json');
+// Connect the route with optional context
+api.connect('goals/:goal_id/items.json');</span>
 
+// Run the route!
 api.getItems({ goal_id: 910 }).then(showItems);
   </pre>
   <pre>
 var api = new APIConnect();
+
 api.domain('api.twitter.com');
 
 // Alternate HTTP methods
@@ -175,6 +292,7 @@ api.createFavorites({ username: 'budday' });
   </pre>
   <pre>
 var api = new APIConnect();
+
 api.domain('api.twitter.com');
 
 // RESTful resources
@@ -188,6 +306,7 @@ api.destroyFavorite({ username: 'budday' });
   </pre>
   <pre>
 var api = new APIConnect();
+
 api.domain('api.twitter.com');
 
 // "favorites" indicates a collection
@@ -205,6 +324,7 @@ api.destroyFavorite({ username: 'budday', id: 3 });
   </pre>
   <pre>
 var api = new APIConnect();
+
 api.domain('andrewplummer.com');
 
 api.connect('recipes');
