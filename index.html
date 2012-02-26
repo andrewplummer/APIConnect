@@ -129,6 +129,12 @@ api.getHomeTimeline().then(function() {
   // You're done!
 });
 </pre>
+<p>Any param or option can also be added at "instance level". Doing this will make it always passed for all routes when executed. Any "instance level" params or options can always be overridden again locally with the passed objects:</p>
+<pre class="sh_javascript">
+api.param('key', 'foo');
+api.getTweets();
+<span class="result">&gt; GET http://api.twitter.com/tweets?key=foo</span>
+</pre>
 <p>Any route can be set up with any level of context. These contexts are always optional, and will only be added if they exist when passed as params:</p>
 <pre class="sh_javascript">
 api.connect(':user/:list_id/members');
