@@ -189,9 +189,7 @@ api.connect('search.json');
 api.cors(false);</span>
 
 // Here we go!
-api.getSearch({ q: 'cookpad' }, {
-  success: showResults
-});
+api.getSearch({ q: 'cookpad' }, { success: showResults });
   </pre>
   <pre>
 <span class="dim">// Create an instance
@@ -417,6 +415,10 @@ api.getManifest(function() {
       $('button').click(function() {
           $('#stage').empty();
           eval($('pre:visible').text());
+      });
+
+      $('#stage').click(function() {
+        $(this).empty();
       });
 
       var match;
