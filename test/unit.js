@@ -12,7 +12,14 @@
 
   function captureRequest(url, options) {
     capturedRequests.push({ url: url, options: options, params: options.data, method: options.type });
-    return $.Deferred().resolve({ response: 'RESPONSE!' });
+    var response = { response: 'RESPONDED!' };
+    if(options.complete) {
+      options.complete(response);
+    }
+    if(options.success) {
+      options.success(response);
+    }
+    return $.Deferred().resolve(response);
   }
 
   function overrideIfRequestIsJSONP(params, method, setting) {
@@ -651,6 +658,30 @@
     equal(counter, 3, 'Counter should be 3');
   });
 
+  test('caching only works for GET requests', function() {
+    api.connect('POST status');
+    api.createStatus({ foo: 'bar' });
+
+    assertRouteCalled(api, 'http://domain/status', 'POST', { foo: 'bar' })
+    equal(capturedRequests.length, 1, 'Captured requests is 1');
+
+    api.createStatus({ foo: 'bar' }, { cache: true });
+    equal(capturedRequests.length, 2, 'Begin cache capture, requests is now 2', { foo: 'bar' });
+
+    api.createStatus({ foo: 'bar' }, {
+      cache: true,
+      complete: updateCounter,
+      success:  updateCounter,
+      error:    updateCounter
+    }).then(updateCounter);
+    equal(capturedRequests.length, 3, 'Cache has no effect with POST requests... counter is 3', { foo: 'bar' });
+
+    api.createStatus();
+
+    equal(capturedRequests.length, 4, '4 requests have run');
+    equal(counter, 3, 'Counter should be 3');
+  });
+
   test('allow options through constructor', function() {
 
     api = new APIConnect({
@@ -1025,9 +1056,9 @@
     });
 
     equal(deferredCount,  -1,  'Done callback fired once');
-    equal(errorCount,     1,  'Error count should be 0');
-    equal(completeCount,  0,  'Complete count should be 2');
-    equal(successCount,   0,  'Success count should be 2');
+    equal(errorCount,     0,  'Error count should be 0');
+    equal(completeCount,  0,  'Complete count should be 0');
+    equal(successCount,   0,  'Success count should be 0');
 
     equal(capturedRequests.length, 0, 'Get requests > 4091 chars cannot be made');
 
@@ -1082,8 +1113,8 @@
 
     equal(deferredCount,  1,  'Done callback fired once');
     equal(errorCount,     0,  'Error count should be 0');
-    equal(completeCount,  1,  'Complete count should be 2');
-    equal(successCount,   1,  'Success count should be 2');
+    equal(completeCount,  1,  'Complete count should be 1');
+    equal(successCount,   1,  'Success count should be 1');
 
     equal(capturedRequests[capturedRequests.length - 1].params, str.slice(0, 2500), 'Request 1 first half')
     equal(capturedRequests[capturedRequests.length - 2].params, str.slice(2500), 'Request 1 second half')
