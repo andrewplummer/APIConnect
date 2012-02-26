@@ -22,7 +22,7 @@
     #container {
       margin: 0 auto;
       min-width: 700px;
-      max-width: 1000px;
+      max-width: 900px;
     }
     h1 a { text-decoration: none }
     h2 { font-size: 1.5em; color: #2e67dc; }
@@ -102,7 +102,7 @@ api.getHomeTimeline();
 <span class="result">&gt; GET http://api.twitter.com/statuses/home_timeline.json</span>
 </pre>
     <p>The route is automatically set up and accessible through a camelized method name in the api object. Calling the route is as simple as calling the method.</p>
-    <p>When making the call, the first object is params. This will most commonly be added to the end of the query string, but in cases where the route contains params, it will be placed here instead and removed from the query string:</p>
+    <p>When making the call, the first object is the params. This will most commonly be added to the end of the query string, but in cases where the route contains params, it will be placed here instead and removed from the query string:</p>
 <pre class="sh_javascript">
 api.connect('statuses/home_timeline');
 api.getHomeTimeline({ foo: 'bar' });
@@ -112,7 +112,17 @@ api.connect('tweets/:tweet_id');
 api.getTweet({ tweet_id: 7 });
 <span class="result">&gt; GET http://api.twitter.com/tweets/7</span>
 </pre>
-<p>The second object passed is an options hash. Any valid option for jQuery.ajax is also valid here. This means that all the standard callbacks will work:</p>
+<p>Params can also be made global, passing it for all routes when executed. Any global params or options can always be overridden again locally with the passed objects:</p>
+<pre class="sh_javascript">
+api.param('api_key', 'foo');
+api.getTweets();
+<span class="result">&gt; GET http://api.twitter.com/tweets?api_key=foo</span>
+
+api.params({ 'token': 'bar' });
+api.getTweets();
+<span class="result">&gt; GET http://api.twitter.com/tweets?token=bar</span>
+</pre>
+<p>The second object passed is an options object. APIConnect options are passed through this object. Additionally, any valid option for jQuery.ajax is also valid here, meaning all the standard callbacks will work:</p>
 <pre class="sh_javascript">
 api.getHomeTimeline({}, {
   success: function() {
@@ -123,17 +133,23 @@ api.getHomeTimeline({}, {
   }
 });
 </pre>
+<p>Options can also be made global, passing them into jQuery.ajax for every request:</p>
+<pre class="sh_javascript">
+api.option('headers', { myCustomHeaderName: 'myCustomHeaderValue' });
+
+api.options({
+  statusCode: {
+    404: function() {
+      alert('Page not found!');
+    }
+  }
+});
+</pre>
 <p>API calls also pass back jQuery deferred objects, so these can be used as well:</p>
 <pre class="sh_javascript">
 api.getHomeTimeline().then(function() {
   // You're done!
 });
-</pre>
-<p>Any param or option can also be added at "instance level". Doing this will make it always passed for all routes when executed. Any "instance level" params or options can always be overridden again locally with the passed objects:</p>
-<pre class="sh_javascript">
-api.param('key', 'foo');
-api.getTweets();
-<span class="result">&gt; GET http://api.twitter.com/tweets?key=foo</span>
 </pre>
 <p>Any route can be set up with any level of context. These contexts are always optional, and will only be added if they exist when passed as params:</p>
 <pre class="sh_javascript">
@@ -181,6 +197,13 @@ api.getMembers({ id: 3});      <span class="dim">&gt; GET     http://api.twitter
 api.createMembers();           <span class="dim">&gt; POST    http://api.twitter.com/members.json</span>
 api.updateMembers({ id: 3 });  <span class="dim">&gt; PUT     http://api.twitter.com/members/3.json</span>
 api.destroyMembers({ id: 3 }); <span class="dim">&gt; DELETE  http://api.twitter.com/members/3.json</span>
+</pre>
+<p>Results from an api call can be cached locally for the duration of the page load. Only get requests will be cached and only if the params match exactly. If cached, the calls will resolve successfully immediately:</p>
+<pre class="sh_javascript">
+api.getStatus({ name: 'bob' }, { cache: true }).then(f);
+
+// Later...
+api.getStatus({ name: 'bob' }, { cache: true }); // Second call will resolve instantly.
 </pre>
     <p>Download this project as either <a href="https://github.com/andrewplummer/APIConnect/zipball/master">zip</a> or <a href="https://github.com/andrewplummer/APIConnect/tarball/master">tar, or clone with <a href="http://git-scm.com">Git</a> by running:</p>
       <pre>$ git clone git://github.com/andrewplummer/APIConnect</pre>
