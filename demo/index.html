@@ -1,0 +1,435 @@
+<html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" href="sh_custom.css" type="text/css" />
+    <style type="text/css">
+      
+      html {
+        color: #fff;
+        margin: 0px;
+        background: -moz-linear-gradient(0% 100% 90deg,#350a0a, #180505);
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#350a0a), to(#180505));
+        height: 100%;
+      }
+
+      body {
+        width: 100%;
+        margin: 0;
+      }
+      pre {
+        background: none;
+        border: none;
+        padding: 30px;
+        font-size: 25px;
+        font-family: Courier;
+        outline: none;
+      }
+
+      button {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      .hidden {
+        display: none;
+      }
+      .dim,
+      .dim * {
+        color: #ccc !important;
+      }
+      .dim {
+        opacity: 0.3;
+      }
+      .tabs {
+      }
+      .tabs p {
+        font-family: Georgia;
+        font-weight: bold;
+        display: inline-block;
+        font-size: 25px;
+        cursor: pointer;
+        padding: 6px 20px;
+        color: #888;
+        margin: 1px;
+      }
+      .tabs .active {
+        color: #fff;
+        background-color: rgba(255,255,255,0.1);
+      }
+      #stage {
+        position: absolute;
+        top: 50px;
+        right: 10px;
+        width: 30%;
+        font-size: 17px;
+        color: #eee;
+      }
+
+      #stage p {
+        margin: 4px 0px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .item {
+        font-size: 20px;
+        display: inline-block;
+        margin: 2px 5px;
+      }
+
+    </style>
+  </head>
+  <body spellcheck="false">
+    <div class="tabs"></div>
+  <pre>
+// Create an instance
+var api = new APIConnect();
+
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();</span>
+
+// Set the domain
+api.domain('search.twitter.com');
+
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');</span>
+
+// Connect the route
+api.connect('search');
+
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search</span>.json<span class="dim">');</span>
+
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');</span>
+
+// Run the route
+api.getSearch();
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');
+
+// Run the route
+api.getSearch(</span>{ q: 'cookpad' }<span class="dim">);</span> // With params
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');
+
+// Run the route
+api.getSearch({ q: 'cookpad' }</span>, { success: showResults }); // And a callback
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');</span>
+
+// Twitter only supports JSONP
+api.cors(false);
+
+<span class="dim">// And a callback
+api.getSearch({ q: 'cookpad' }, { success: showResults });</span>
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');
+
+// Twitter only supports JSONP
+api.cors(false);</span>
+
+// Here we go!
+api.getSearch({ q: 'cookpad' }, {
+  success: showResults
+});
+  </pre>
+  <pre>
+<span class="dim">// Create an instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('search.twitter.com');
+
+// With a format
+api.connect('search.json');
+
+// Twitter only supports JSONP
+api.cors(false);
+
+// Here we go!
+api.getSearch({ q: 'cookpad' }, {
+  success: showResults,</span>
+
+  // All options are handed to $.ajax
+  complete: function() {
+    alert('Done!');
+  }
+
+});
+  </pre>
+  <pre>
+// Round 2
+  </pre>
+  <pre>
+// Round 2
+
+// Create the instance
+var api = new APIConnect();
+  </pre>
+  <pre>
+// Round 2
+
+<span class="dim">// Create the instance
+var api = new APIConnect();</span>
+
+// Set the domain
+api.domain('api.iknow.jp');
+  </pre>
+  <pre>
+// Round 2
+
+<span class="dim">// Create the instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('api.iknow.jp');</span>
+
+// Turn off cors
+api.cors(false);
+  </pre>
+  <pre>
+// Round 2
+
+<span class="dim">// Create the instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('api.iknow.jp');
+
+// Turn off cors
+api.cors(false);</span>
+
+// Connect the route with optional context
+api.connect('goals/:goal_id/items.json');
+  </pre>
+  <pre>
+// Round 2
+
+<span class="dim">// Create the instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('api.iknow.jp');
+
+// Turn off cors
+api.cors(false);
+
+// Connect the route with optional context
+api.connect('goals/:goal_id/items.json');</span>
+
+// Run the route!
+api.getItems({ goal_id: 910 }).then(showItems);
+  </pre>
+  <pre>
+var api = new APIConnect();
+
+api.domain('api.twitter.com');
+
+// Alternate HTTP methods
+api.connect('POST :username/favorites');
+
+api.createFavorites({ username: 'budday' });
+  </pre>
+  <pre>
+var api = new APIConnect();
+
+api.domain('api.twitter.com');
+
+// RESTful resources
+api.resource(':username/favorite');
+
+api.getFavorite({ username: 'budday' });
+api.createFavorite({ username: 'budday' });
+api.updateFavorite({ username: 'budday' });
+api.destroyFavorite({ username: 'budday' });
+
+  </pre>
+  <pre>
+var api = new APIConnect();
+
+api.domain('api.twitter.com');
+
+// "favorites" indicates a collection
+api.resource(':username/favorites');
+
+// index
+api.getFavorites({ username: 'budday' });
+// show
+api.getFavorite({ username: 'budday', id: 3 });
+
+api.createFavorite({ username: 'budday' });
+api.updateFavorite({ username: 'budday', id: 3 });
+api.destroyFavorite({ username: 'budday', id: 3 });
+
+  </pre>
+  <pre>
+var api = new APIConnect();
+
+api.domain('andrewplummer.com');
+
+api.connect('recipes');
+
+// Allow credentials
+api.getRecipes({}).then(showResults);
+  </pre>
+  <pre>
+api = api || new APIConnect();
+
+api.domain('andrewplummer.com');
+
+api.connect('recipes');
+
+// Internal caching
+api.getRecipes({}, { cache: true }).then(showResults);
+  </pre>
+  <pre>
+// All routes/options/params in the constructor
+var api = new APIConnect({
+  domain   : 'api.twitter.com',
+  protocol : 'https',
+  cors     :  false,
+  routes   : [
+    'GET  /status',
+    'POST /statuses/update',
+    'POST direct_messages/destroy/:id AS destroyMessage'
+  ]
+});
+
+api.destroyMessage({ id: 7 });
+  </pre>
+  <pre>
+// Future??
+var api = new APIConnect();
+
+api.getManifest(function() {
+
+  api.getUserTweets();
+
+  // ...
+
+});
+
+  </pre>
+  <div id="stage"></div>
+  <button>Punch it, Chewie</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script src="../lib/apiconnect.js"></script>
+    <!--<script src="https://raw.github.com/andrewplummer/APIConnect/master/lib/main.js"></script>-->
+    <script src="sh_main.min.js" type="text/javascript"></script>
+    <script src="sh_javascript.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+      showItems = function(data) {
+        $('#stage').html(data.items.map(function(i) {
+              return '<span class="item">' + i.cue.content.text + '</span>';
+        }).join(''));
+      }
+
+      showResults = function(data) {
+        $('#stage').html(data.results.map(function(t) {
+              return '<p>' + t.text + '</p>';
+        }).join(''));
+      }
+
+      currentTab = 1;
+
+      $(document).keydown(function(e) {
+          if(e.which == 37) {
+            setTab(currentTab - 1);
+          } else if (e.which == 39) {
+            setTab(currentTab + 1);
+          }
+      });
+
+      $('pre').each(function(i) {
+          var el = $(this);
+          el.addClass('sh_javascript').attr('contentEditable', true);
+          el.toggleClass('hidden', i > 0);
+          $('<p>' + (i + 1) + '</p>').appendTo($('.tabs')).click(function() {
+            currentTab = parseInt(i) + 1;
+            window.location.hash = '#' + (i + 1);
+            $('pre').hide();
+            $('.tabs p').removeClass('active');
+            $(this).addClass('active');
+            el.show();
+          }).toggleClass('active', i == 0);
+      });
+      $('button').click(function() {
+          $('#stage').empty();
+          eval($('pre:visible').text());
+      });
+
+      var match;
+      if(match = window.location.hash.match(/#(\d+)/)) {
+        setTab(parseInt(match[1]));
+      }
+
+      function setTab(i) {
+        currentTab = Math.max(1, Math.min($('.tabs p').length, i));
+        $('.tabs p').eq(currentTab - 1).click();
+      }
+
+      sh_highlightDocument();
+    </script>
+  </body>
+</html>

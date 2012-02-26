@@ -1,0 +1,150 @@
+pre {
+  color: #eeeeee;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_keyword {
+  color: #b62;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_predef_func {
+  color: #a7c;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_type {
+  color: #00ff00;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_string {
+  color: #8b0;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_cbracket {
+  color: #fa3;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_regexp {
+  color: #e5e;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_specialchar {
+  color: #ff22ff;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_comment {
+  color: #888;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_number {
+  color: #f93;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_preproc {
+  color: #ff22ff;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_function {
+  color: #eee;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_url {
+  color: #ff0000;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_date {
+  color: #B26818;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_time {
+  color: #B26818;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_file {
+  color: #B26818;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_ip {
+  color: #ff0000;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_name {
+  color: #ff0000;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_variable {
+  color: #B26818;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_oldfile {
+  color: #ff22ff;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_newfile {
+  color: #ff0000;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_difflines {
+  color: #B26818;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_selector {
+  color: #B26818;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_property {
+  color: #B26818;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sh_value {
+  color: #ff0000;
+  font-weight: normal;
+  font-style: normal;
+}
+
