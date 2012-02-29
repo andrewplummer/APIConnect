@@ -1201,4 +1201,9 @@
     equals(api.domain(undefined) === api, true, 'Passing undefined sets to undefined')
   });
 
+  test('params will return all params', function() {
+    equals(typeof api.params(), 'object', 'no arguments to params returns the object')
+    equals(typeof api.options(), 'object', 'same for options')
+  });
+
 })();
