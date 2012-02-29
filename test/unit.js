@@ -1196,6 +1196,9 @@
     assertRouteCalled(api, 'http://domain/cats.json', 'GET')
   });
 
-
+  test('getters should check argument length', function() {
+    equals(api.domain(), 'domain', 'Getter works')
+    equals(api.domain(undefined) === api, true, 'Passing undefined sets to undefined')
+  });
 
 })();
