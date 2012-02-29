@@ -44,6 +44,12 @@
       .dim {
         opacity: 0.3;
       }
+      .request {
+      }
+      .request,
+      .request * {
+        color: #666;
+      }
       .tabs {
       }
       .tabs p {
@@ -287,9 +293,9 @@ var api = new APIConnect();
 api.domain('api.twitter.com');
 
 // Alternate HTTP methods
-api.connect('POST :username/favorites');
+api.connect('POST :username/favorite');
 
-api.createFavorites({ username: 'budday' });
+api.createFavorites({ username: 'buddy' });
   </pre>
   <pre>
 var api = new APIConnect();
@@ -299,10 +305,13 @@ api.domain('api.twitter.com');
 // RESTful resources
 api.resource(':username/favorite');
 
-api.getFavorite({ username: 'budday' });
-api.createFavorite({ username: 'budday' });
-api.updateFavorite({ username: 'budday' });
-api.destroyFavorite({ username: 'budday' });
+// some params
+var p = { username: 'buddy' };
+
+api.getFavorite(p);     <span class="request">&gt; GET    http://api.twitter.com/buddy/favorite</span>
+api.createFavorite(p);  <span class="request">&gt; POST   http://api.twitter.com/buddy/favorite</span>
+api.updateFavorite(p);  <span class="request">&gt; PUT    http://api.twitter.com/buddy/favorite</span>
+api.destroyFavorite(p); <span class="request">&gt; DELETE http://api.twitter.com/buddy/favorite</span>
 
   </pre>
   <pre>
@@ -313,25 +322,15 @@ api.domain('api.twitter.com');
 // "favorites" indicates a collection
 api.resource(':username/favorites');
 
-// index
-api.getFavorites({ username: 'budday' });
-// show
-api.getFavorite({ username: 'budday', id: 3 });
+// some params
+var p = { username: 'buddy' };
 
-api.createFavorite({ username: 'budday' });
-api.updateFavorite({ username: 'budday', id: 3 });
-api.destroyFavorite({ username: 'budday', id: 3 });
+api.getFavorites(p);    <span class="request">&gt; GET    http://api.twitter.com/buddy/favorites</span>
+api.getFavorite(p);     <span class="request">&gt; GET    http://api.twitter.com/buddy/favorites/3</span>
+api.createFavorite(p);  <span class="request">&gt; POST   http://api.twitter.com/buddy/favorites</span>
+api.updateFavorite(p);  <span class="request">&gt; PUT    http://api.twitter.com/buddy/favorites/3</span>
+api.destroyFavorite(p); <span class="request">&gt; DELETE http://api.twitter.com/buddy/favorites/3</span>
 
-  </pre>
-  <pre>
-var api = new APIConnect();
-
-api.domain('andrewplummer.com');
-
-api.connect('recipes');
-
-// Allow credentials
-api.getRecipes({}).then(showResults);
   </pre>
   <pre>
 api = api || new APIConnect();
@@ -418,6 +417,9 @@ api.getManifest(function() {
       $('button').click(function() {
           $('#stage').empty();
           eval($('pre:visible').text());
+      });
+      $('#stage').click(function() {
+        $('#stage').empty();
       });
 
       sh_highlightDocument();
