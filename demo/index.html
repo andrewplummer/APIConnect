@@ -3,7 +3,7 @@
     <title></title>
     <link rel="stylesheet" href="sh_custom.css" type="text/css" />
     <style type="text/css">
-      
+
       html {
         color: #fff;
         margin: 0px;
@@ -17,6 +17,7 @@
         margin: 0;
       }
       pre {
+        display: none;
         background: none;
         border: none;
         padding: 30px;
@@ -116,7 +117,7 @@ var api = new APIConnect();
 // Set the domain
 api.domain('search.twitter.com');
 
-// With a format
+</span>// With a format<span class="dim">
 api.connect('search</span>.json<span class="dim">');</span>
 
   </pre>
@@ -189,7 +190,9 @@ api.connect('search.json');
 api.cors(false);</span>
 
 // Here we go!
-api.getSearch({ q: 'cookpad' }, { success: showResults });
+api.getSearch({ q: 'cookpad' }, {
+  success: showResults
+});
   </pre>
   <pre>
 <span class="dim">// Create an instance
@@ -219,24 +222,24 @@ api.getSearch({ q: 'cookpad' }, {
 // Round 2
   </pre>
   <pre>
-// Round 2
+<span class="dim">// Round 2</span>
 
 // Create the instance
 var api = new APIConnect();
   </pre>
   <pre>
-// Round 2
+<span class="dim">// Round 2
 
-<span class="dim">// Create the instance
+// Create the instance
 var api = new APIConnect();</span>
 
 // Set the domain
 api.domain('api.iknow.jp');
   </pre>
   <pre>
-// Round 2
+<span class="dim">// Round 2
 
-<span class="dim">// Create the instance
+// Create the instance
 var api = new APIConnect();
 
 // Set the domain
@@ -246,9 +249,9 @@ api.domain('api.iknow.jp');</span>
 api.cors(false);
   </pre>
   <pre>
-// Round 2
+<span class="dim">// Round 2
 
-<span class="dim">// Create the instance
+// Create the instance
 var api = new APIConnect();
 
 // Set the domain
@@ -261,9 +264,9 @@ api.cors(false);</span>
 api.connect('goals/:goal_id/items.json');
   </pre>
   <pre>
-// Round 2
+<span class="dim">// Round 2
 
-<span class="dim">// Create the instance
+// Create the instance
 var api = new APIConnect();
 
 // Set the domain
@@ -389,7 +392,7 @@ api.getManifest(function() {
         }).join(''));
       }
 
-      currentTab = 1;
+      var currentTab = 1;
 
       $(document).keydown(function(e) {
           if(e.which == 37) {
@@ -417,13 +420,13 @@ api.getManifest(function() {
           eval($('pre:visible').text());
       });
 
-      $('#stage').click(function() {
-        $(this).empty();
-      });
+      sh_highlightDocument();
 
       var match;
       if(match = window.location.hash.match(/#(\d+)/)) {
         setTab(parseInt(match[1]));
+      } else {
+        setTab(0);
       }
 
       function setTab(i) {
@@ -431,7 +434,6 @@ api.getManifest(function() {
         $('.tabs p').eq(currentTab - 1).click();
       }
 
-      sh_highlightDocument();
     </script>
   </body>
 </html>
