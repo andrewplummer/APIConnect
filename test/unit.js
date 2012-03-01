@@ -28,6 +28,13 @@
            (setting == 'jsonp' || (setting == 'jsonp-except-get' && method != 'GET'));
   }
 
+  function withoutCorsSupport(fn) {
+    var was = $.support.cors;
+    $.support.cors = false;
+    fn();
+    $.support.cors = was;
+  }
+
   function assertRouteCalled(context, url, method, params) {
     var request = capturedRequests[capturedRequests.length - 1],
         expectedParamsLength = 0,
@@ -1204,6 +1211,24 @@
   test('params will return all params', function() {
     equals(typeof api.params(), 'object', 'no arguments to params returns the object')
     equals(typeof api.options(), 'object', 'same for options')
+  });
+
+  test('will switch to JSONP if no browser support for CORS', function() {
+    withoutCorsSupport(function() {
+      api.connect('DELETE user');
+      api.destroyUser();
+      equals(capturedRequests[0].params._method, 'DELETE', 'Last call was JSONP');
+    });
+  });
+
+  test('same domain will not use JSONP', function() {
+    withoutCorsSupport(function() {
+      api.domain(window.location.hostname);
+      api.port(window.location.port);
+      api.connect('DELETE user');
+      api.destroyUser();
+      equals(capturedRequests[0].params._method, undefined, 'Last call was not JSONP');
+    });
   });
 
 })();
