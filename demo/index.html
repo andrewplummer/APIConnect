@@ -288,6 +288,42 @@ api.connect('goals/:goal_id/items.json');</span>
 api.getItems({ goal_id: 910 }).then(showItems);
   </pre>
   <pre>
+<span class="dim">// Round 2
+
+// Create the instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('api.iknow.jp');
+
+// Turn off cors
+api.cors(false);</span>
+
+// Multiple optional contexts
+api.connect('users/:user_id/goals/:goal_id/items/:item_id/sentences.json');
+
+// Run the route!
+api.getSentences({ goal_id: 910 }).then(showSentences);
+  </pre>
+  <pre>
+<span class="dim">// Round 2
+
+// Create the instance
+var api = new APIConnect();
+
+// Set the domain
+api.domain('api.iknow.jp');
+
+// Turn off cors
+api.cors(false);</span>
+
+// Params "burned in"
+api.connect('memory', { params: { completed: true }, as: 'getCompleted' });
+
+// Run the route!
+api.getCompleted(); <span class="request">&gt; GET http://api.iknow.jp/memory?completed=true</span>
+  </pre>
+  <pre>
 var api = new APIConnect();
 
 api.domain('api.twitter.com');
@@ -312,6 +348,36 @@ api.getFavorite(p);     <span class="request">&gt; GET    http://api.twitter.com
 api.createFavorite(p);  <span class="request">&gt; POST   http://api.twitter.com/buddy/favorite</span>
 api.updateFavorite(p);  <span class="request">&gt; PUT    http://api.twitter.com/buddy/favorite</span>
 api.destroyFavorite(p); <span class="request">&gt; DELETE http://api.twitter.com/buddy/favorite</span>
+
+  </pre>
+  <pre>
+var api = new APIConnect();
+
+api.domain('api.twitter.com');
+
+// RESTful resources
+api.resource(':username/favorite', { only: 'create,destroy' });
+
+// some params
+var p = { username: 'buddy' };
+
+api.createFavorite(p);  <span class="request">&gt; POST   http://api.twitter.com/buddy/favorite</span>
+api.destroyFavorite(p); <span class="request">&gt; DELETE http://api.twitter.com/buddy/favorite</span>
+
+  </pre>
+  <pre>
+var api = new APIConnect();
+
+api.domain('api.twitter.com');
+
+// RESTful resources
+api.resource(':username/favorite', { except: 'create,destroy' });
+
+// some params
+var p = { username: 'buddy' };
+
+api.getFavorite(p);     <span class="request">&gt; GET http://api.twitter.com/buddy/favorite</span>
+api.updateFavorite(p);  <span class="request">&gt; PUT http://api.twitter.com/buddy/favorite</span>
 
   </pre>
   <pre>
@@ -370,6 +436,18 @@ api.getManifest(function() {
 });
 
   </pre>
+  <pre>
+// Other features:
+
+// JSONP if x-domain and no browser support
+// JSONP fallback if &gt; 4091 chars
+
+// Protocol auto-detect (current page is SSL or if token)
+
+api.getOverride('always');  // POST, PUT, DELETE  -&gt; GET + _method
+api.postOverride('always'); // PUT, DELETE        -&gt; POST + _method
+
+  </pre>
   <div id="stage"></div>
   <button>Punch it, Chewie</button>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -382,6 +460,12 @@ api.getManifest(function() {
       showItems = function(data) {
         $('#stage').html(data.items.map(function(i) {
               return '<span class="item">' + i.cue.content.text + '</span>';
+        }).join(''));
+      }
+
+      showSentences = function(data) {
+        $('#stage').html(data.sentences.map(function(s) {
+              return '<span class="item">' + s.text + '</span>';
         }).join(''));
       }
 

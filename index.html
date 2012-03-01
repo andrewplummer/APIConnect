@@ -25,7 +25,13 @@
       max-width: 900px;
     }
     h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #2e67dc; }
+    h2 {
+      font-family: "Trebuchet MS", "Helvetica", sans-serif;
+      font-weight: normal;
+      font-size: 2em;
+      margin-top: 2em;
+      color: #888;
+    }
     h3 { text-align: center; color: #2e67dc; }
     a { color: #2e67dc; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
@@ -50,12 +56,12 @@
       font-family:"Monaco","Lucida Console","Bitstream Vera Sans Mono","Courier New",monospace;
     }
     .code {
-      border: 1px solid #bbb;
-      color: #222;
-      background-color: #333;
-      color: #eee;
+      border: 1px solid #d2d2d2;
+      color: #333;
+      background-color: #e8e8e8;
       border-radius: 5px;
-      padding: 2px 8px;
+      padding: 1px 6px;
+      margin: 0px 3px;
       font-size: 14px;
     }
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
@@ -80,15 +86,6 @@
       <a href="https://github.com/andrewplummer/APIConnect">APIConnect</a>
     </h1>
 
-
-
-
-
-
-
-
-
-
     <p>APIConnect provides a very easy and intuitive way to interact with APIs, especially those hosted on other domains. Setup is as simple as creating the instance, specifying the domain, and connecting the route:</p>
 
 <pre class="sh_javascript">
@@ -102,25 +99,79 @@ api.getHomeTimeline();
 <span class="result">&gt; GET http://api.twitter.com/statuses/home_timeline.json</span>
 </pre>
     <p>The route is automatically set up and accessible through a camelized method name in the api object. Calling the route is as simple as calling the method.</p>
-    <p>When making the call, the first object is the params. This will most commonly be added to the end of the query string, but in cases where the route contains params, it will be placed here instead and removed from the query string:</p>
+
+<h2>Connecting Routes</h2>
+<p>Any route can be set up with any level of context. These contexts are always optional, and will only be added if they exist when passed as params:</p>
+<pre class="sh_javascript">
+api.connect(':user/:list_id/members');
+api.getMembers({ user: 'bob', list_id: 5 });
+
+<span class="result">&gt; GET http://domain/bob/5/members.json</span>
+</pre>
+<p>The 4 main HTTP verbs, "GET", "POST", "PUT", and "DELETE", are allowed in routes, and map to "get", "create", "update", and "destroy", respectively. "GET" is the implied default:</p>
+<pre class="sh_javascript">
+api.connect('POST :user/:list_id/members');
+api.connect('DELETE :user/:list_id/members');
+
+api.createMember({ user: 'bob', list_id: 5 });
+<span class="result">&gt; POST http://domain/bob/3/members</span>
+
+api.destroyMember({ user: 'bob', list_id: 5 });
+<span class="result">&gt; DELETE http://domain/bob/5/members</span>
+</pre>
+<p>"resource" serves as a shortcut to all 4 HTTP verbs:</p>
+<pre class="sh_javascript">
+api.resource('member');
+
+api.getMember();     <span class="dim">&gt; GET     http://domain/member.json</span>
+api.createMember();  <span class="dim">&gt; POST    http://domain/member.json</span>
+api.updateMember();  <span class="dim">&gt; PUT     http://domain/member.json</span>
+api.destroyMember(); <span class="dim">&gt; DELETE  http://domain/member.json</span>
+</pre>
+<p>Members of these routes can be limited using <span class="code">only</span> and <span class="code">exclude</span>:</p>
+<pre class="sh_javascript">
+api.resource('member', { only: 'show,update' });
+
+api.getMember();     <span class="dim">&gt; GET     http://domain/member.json</span>
+api.updateMember();  <span class="dim">&gt; PUT     http://domain/member.json</span>
+
+api.resource('member', { exclude: 'show,update' });
+
+api.createMember();  <span class="dim">&gt; POST    http://domain/member.json</span>
+api.destroyMember(); <span class="dim">&gt; DELETE  http://domain/member.json</span>
+</pre>
+<p>If a resource is a collection, passing <span class="code">collection: true</span> in the options for "resource" will create standard collection routes including an "index" method:</p>
+<pre class="sh_javascript">
+api.resource('status', { collection: true });
+
+api.getStatus();              <span class="dim">&gt; GET     http://domain/status.json</span>
+api.getStatus({ id: 3});      <span class="dim">&gt; GET     http://domain/status/3.json</span>
+api.createStatus();           <span class="dim">&gt; POST    http://domain/status.json</span>
+api.updateStatus({ id: 3 });  <span class="dim">&gt; PUT     http://domain/status/3.json</span>
+api.destroyStatus({ id: 3 }); <span class="dim">&gt; DELETE  http://domain/status/3.json</span>
+</pre>
+<p>If a "collection" is omitted, it will attempt to be intelligently detected by the pluralization of the resource passed. In this case, pluralization of the methods will also use intelligent detection:</p>
+<pre class="sh_javascript">
+api.resource('members');
+
+api.getMembers();              <span class="dim">&gt; GET     http://domain/members.json</span>
+api.getMembers({ id: 3});      <span class="dim">&gt; GET     http://domain/members/3.json</span>
+api.createMembers();           <span class="dim">&gt; POST    http://domain/members.json</span>
+api.updateMembers({ id: 3 });  <span class="dim">&gt; PUT     http://domain/members/3.json</span>
+api.destroyMembers({ id: 3 }); <span class="dim">&gt; DELETE  http://domain/members/3.json</span>
+</pre>
+
+
+<h2>Calling Routes</h2>
+<p>When making the call, the first object is the params. This will most commonly be added to the end of the query string, but in cases where the route contains params, it will be placed here instead and removed from the query string:</p>
 <pre class="sh_javascript">
 api.connect('statuses/home_timeline');
 api.getHomeTimeline({ foo: 'bar' });
-<span class="result">&gt; GET http://api.twitter.com/statuses/home_timeline?foo=bar</span>
+<span class="result">&gt; GET http://domain/statuses/home_timeline?foo=bar</span>
 
 api.connect('tweets/:tweet_id');
 api.getTweet({ tweet_id: 7 });
-<span class="result">&gt; GET http://api.twitter.com/tweets/7</span>
-</pre>
-<p>Params can also be made global, passing it for all routes when executed. Any global params or options can always be overridden again locally with the passed objects:</p>
-<pre class="sh_javascript">
-api.param('api_key', 'foo');
-api.getTweets();
-<span class="result">&gt; GET http://api.twitter.com/tweets?api_key=foo</span>
-
-api.params({ 'token': 'bar' });
-api.getTweets();
-<span class="result">&gt; GET http://api.twitter.com/tweets?token=bar</span>
+<span class="result">&gt; GET http://domain/tweets/7</span>
 </pre>
 <p>The second object passed is an options object. APIConnect options are passed through this object. Additionally, any valid option for jQuery.ajax is also valid here, meaning all the standard callbacks will work:</p>
 <pre class="sh_javascript">
@@ -133,7 +184,14 @@ api.getHomeTimeline({}, {
   }
 });
 </pre>
-<p>Options can also be made global, passing them into jQuery.ajax for every request:</p>
+<p>API calls also pass back jQuery deferred objects, so these can be used as well:</p>
+<pre class="sh_javascript">
+api.getHomeTimeline().then(function() {
+  // You're done!
+});
+</pre>
+<h2>Options</h2>
+<p>Options are passed in when making the call, and can be overridden there, however instance-wide options are set on the object itself:</p>
 <pre class="sh_javascript">
 api.option('headers', { myCustomHeaderName: 'myCustomHeaderValue' });
 
@@ -145,58 +203,61 @@ api.options({
   }
 });
 </pre>
-<p>API calls also pass back jQuery deferred objects, so these can be used as well:</p>
+<p>Additionally the basic options "domain", "protocol", "port", "timeout", "cors", and "jsonp" can be set directly on the instance:</p>
 <pre class="sh_javascript">
-api.getHomeTimeline().then(function() {
-  // You're done!
+api.domain('localhost');
+api.port('4000');
+api.cors(false);
+</pre>
+<p>All such options are both getters and setters. Passing no arguments will return their current value:</p>
+<pre class="sh_javascript">
+api.domain();     // "localhost"
+api.port('4000'); // "4000"
+api.cors(false);  // false
+</pre>
+
+<h2>Cross-domain ajax and JSONP</h2>
+<p>APIConnect will by default attempt to use CORS (cross-origin resource sharing). For this to work, the API you're working with needs to be sending the correct response headers. If your calls are returning a 200-level response but no data is coming in, most likely CORS is not supported and needs to be disabled:</p>
+<pre class="sh_javascript">
+api.cors(false);
+</pre>
+<p>Turning off CORS support will fall back to JSONP, which also needs to be enabled on the API side:</p>
+<pre class="sh_javascript">
+api.cors(false);
+api.connect('users');
+api.getUsers();
+<span class="result">&gt; GET http://domain/users?callback=jQuery161007680199619937322_1330586429472</span>
+</pre>
+<p>Certain older browsers (earlier versions of IE, etc) do not support CORS. In this case, APIConnect will fall back to JSONP <em>if</em> the request is on another domain. This means that if both CORS and JSONP are enabled on the API server, all browsers will work with APIConnect of the box. However if JSONP is not supported, the request must be on the same domain or it will fail outright.</p>
+
+<h2>Defaults</h2>
+<p>Params can be "burned in" by passing them at the point of connecting the route. They will be used whenever calling that route. Passing "as" to override the method name can make calls more expressive:</p>
+<pre class="sh_javascript">
+api.connect('tasks', { params: { completed: true }, as: 'getCompletedTasks' });
+
+api.getCompletedTasks();
+<span class="result">&gt; GET http://domain/tasks?completed=true</span>
+</pre>
+<p>Params can also be made global, passing it for all routes when executed. Any global params or options can always be overridden again locally with the passed objects:</p>
+<pre class="sh_javascript">
+api.param('api_key', 'foo');
+api.getTweets();
+<span class="result">&gt; GET http://domain/tweets?api_key=foo</span>
+
+api.params({ 'token': 'bar' });
+api.getTweets();
+<span class="result">&gt; GET http://domain/tweets?token=bar</span>
+</pre>
+
+<h2>Advanced</h2>
+<p>If you have many routes with the same context you can hold onto it so as not to repeat yourself:</p>
+<pre class="sh_javascript">
+api.context(':user', function() {
+  api.connect('tasks');
+  api.connect('images');
+  api.connect('profile');
+  // ...
 });
-</pre>
-<p>Any route can be set up with any level of context. These contexts are always optional, and will only be added if they exist when passed as params:</p>
-<pre class="sh_javascript">
-api.connect(':user/:list_id/members');
-api.getMembers({ user: 'bob', list_id: 5 });
-
-<span class="result">&gt; GET http://api.twitter.com/bob/5/members.json</span>
-</pre>
-<p>The 4 main HTTP verbs, "GET", "POST", "PUT", and "DELETE", are allowed in routes, and map to "get", "create", "update", and "destroy", respectively. "GET" is the implied default:</p>
-<pre class="sh_javascript">
-api.connect('POST :user/:list_id/members');
-api.connect('DELETE :user/:list_id/members');
-
-api.createMember({ user: 'bob', list_id: 5 });
-<span class="result">&gt; POST http://api.twitter.com/bob/3/members</span>
-
-api.destroyMember({ user: 'bob', list_id: 5 });
-<span class="result">&gt; DELETE http://api.twitter.com/bob/5/members</span>
-</pre>
-<p>"resource" serves as a shortcut to all 4 HTTP verbs:</p>
-<pre class="sh_javascript">
-api.resource('member');
-
-api.getMember();     <span class="dim">&gt; GET     http://api.twitter.com/member.json</span>
-api.createMember();  <span class="dim">&gt; POST    http://api.twitter.com/member.json</span>
-api.updateMember();  <span class="dim">&gt; PUT     http://api.twitter.com/member.json</span>
-api.destroyMember(); <span class="dim">&gt; DELETE  http://api.twitter.com/member.json</span>
-</pre>
-<p>If a resource is a collection, passing collection: true in the options for "resource" will create standard collection routes including an "index" method:</p>
-<pre class="sh_javascript">
-api.resource('status', { collection: true });
-
-api.getStatus();              <span class="dim">&gt; GET     http://api.twitter.com/status.json</span>
-api.getStatus({ id: 3});      <span class="dim">&gt; GET     http://api.twitter.com/status/3.json</span>
-api.createStatus();           <span class="dim">&gt; POST    http://api.twitter.com/status.json</span>
-api.updateStatus({ id: 3 });  <span class="dim">&gt; PUT     http://api.twitter.com/status/3.json</span>
-api.destroyStatus({ id: 3 }); <span class="dim">&gt; DELETE  http://api.twitter.com/status/3.json</span>
-</pre>
-<p>If a "collection" is omitted, it will attempt to be intelligently detected by the pluralization of the resource passed. In this case, pluralization of the methods will also use intelligent detection:</p>
-<pre class="sh_javascript">
-api.resource('members');
-
-api.getMembers();              <span class="dim">&gt; GET     http://api.twitter.com/members.json</span>
-api.getMembers({ id: 3});      <span class="dim">&gt; GET     http://api.twitter.com/members/3.json</span>
-api.createMembers();           <span class="dim">&gt; POST    http://api.twitter.com/members.json</span>
-api.updateMembers({ id: 3 });  <span class="dim">&gt; PUT     http://api.twitter.com/members/3.json</span>
-api.destroyMembers({ id: 3 }); <span class="dim">&gt; DELETE  http://api.twitter.com/members/3.json</span>
 </pre>
 <p>Results from an api call can be cached locally for the duration of the page load. Only get requests will be cached and only if the params match exactly. If cached, the calls will resolve successfully immediately:</p>
 <pre class="sh_javascript">
@@ -205,6 +266,9 @@ api.getStatus({ name: 'bob' }, { cache: true }).then(f);
 // Later...
 api.getStatus({ name: 'bob' }, { cache: true }); // Second call will resolve instantly.
 </pre>
+
+
+
     <p>Download this project as either <a href="https://github.com/andrewplummer/APIConnect/zipball/master">zip</a> or <a href="https://github.com/andrewplummer/APIConnect/tarball/master">tar, or clone with <a href="http://git-scm.com">Git</a> by running:</p>
       <pre>$ git clone git://github.com/andrewplummer/APIConnect</pre>
   </div>
