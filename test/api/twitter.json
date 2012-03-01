@@ -1,0 +1,56 @@
+<?php
+
+
+require('cors.php');
+
+
+/**
+  * Executes an API call
+  * @param string $twitter_method The Twitter method to call
+  * @param string $http_method The HTTP method to use
+  * @param string $format Return format
+  * @param array $options Options to pass to the Twitter method
+  * @param boolean $require_credentials Whether or not credentials are required
+  * @return string
+  */
+function apiCall($query, $http_method, $format, $options, $require_credentials = true)
+{
+     //$credentials = "l_andrew_l:t2036duke"; // Replace for your own credentials
+
+     $curl_handle = curl_init();
+     $api_url = sprintf('http://search.twitter.com/search.json?q=%s', $query);
+
+     if (($http_method == 'get') && (count($options) > 0))
+     {
+         $api_url .= '?' . http_build_query($options);
+     }
+
+     curl_setopt($curl_handle, CURLOPT_URL, $api_url);
+
+     if ($require_credentials)
+     {
+         curl_setopt($curl_handle, CURLOPT_USERPWD, $credentials);
+     }
+     if ($http_method == 'post')
+     {
+         curl_setopt($curl_handle, CURLOPT_POST, true);
+         curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query($options));
+     }
+
+     curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+     curl_setopt($curl_handle, CURLOPT_HTTPHEADER, array('Expect:'));
+
+     $twitter_data = curl_exec($curl_handle);
+
+     header('HTTP/1.1 200 OK');
+     curl_close($curl_handle);
+
+     return $twitter_data;
+}
+
+// Gets the 20 most recent statuses
+$f = apiCall('foobar', 'get', 'json', array(), false);
+
+echo $f;
+
+?>
