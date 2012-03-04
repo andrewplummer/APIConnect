@@ -2,11 +2,10 @@
 <html>
 <head>
   <meta charset='utf-8'>
-  <title>APIConnect</title>
+  <title>APIConnect - A simplified Javascript interface for working with APIs.</title>
   <style type="text/css">
     body {
-      margin-top: 4em;
-      margin-bottom: 4em;
+      margin: 4em 0;
       background-color: #eee;
       font-family: Helvetica, Arial, FreeSans, san-serif;
       color: #000000;
@@ -36,28 +35,14 @@
     a { color: #2e67dc; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
     .download { float: right; }
-    pre {
-      background: #222;
-      padding: 15px;
-      border-radius: 5px;
-      font-size: 16px;
-      margin-bottom: 40px;
-    }
-    pre .result {
-      display: inline-block;
-      margin-top: 5px;
-      color: #888;
-    }
-    pre .dim {
-      color: #888;
-    }
-    pre,
+    #json_stage,
+    .code_example .stage,
     .code {
       font-family:"Monaco","Lucida Console","Bitstream Vera Sans Mono","Courier New",monospace;
     }
     .code {
       border: 1px solid #d2d2d2;
-      color: #333;
+      color: #222;
       background-color: #e8e8e8;
       border-radius: 5px;
       padding: 1px 6px;
@@ -66,133 +51,329 @@
     }
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
+
+
+#download,
+#github {
+  float: right;
+  display: inline-block;
+  width: 120px;
+  padding: 100px 0px 10px 0px;
+  text-align: center;
+  color: #555;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+#download:hover,
+#github:hover {
+  background-color: rgba(0,0,0,0.03);
+  color: #333;
+}
+
+#download {
+  background: url(images/download.png) no-repeat center 10px;
+  margin-bottom: 10px;
+}
+
+#github {
+  background: url(images/github.png) no-repeat center 6px;
+}
+
+#share {
+  float: right;
+  clear: right;
+  margin-left: 35px;
+  width: 230px;
+  height: 75px;
+}
+
+#share > div {
+  float: left;
+  margin-top: 3px;
+  width: 70px;
+}
+
+#twitter {
+  margin-right: 3px;
+}
+
+.code_example {
+  padding: 15px 20px;
+  border-radius: 5px;
+  margin-bottom: 40px;
+  line-height: 1.5;
+  color: #aaa;
+  background: #222 url(images/loading.gif) no-repeat center center;
+  text-indent: -10000px;
+  min-height: 50px;
+}
+
+.code_example.initialized {
+  background: #222;
+  text-indent: 0px;
+}
+
+.code_example pre,
+.code_example .result {
+  font-size: 16px;
+  margin: 0px;
+  position: relative;
+  display: block;
+  clear: both;
+  outline: none;
+  line-height: 1.3;
+}
+
+.code_example .result {
+  margin-top: 10px;
+  color: #777;
+  color: rgba(255,255,255,0.5);
+  display: inline-block;
+}
+
+.code_example .prompt {
+  vertical-align: top;
+  margin-right: 4px;
+}
+
+.code_example .actions {
+  visibility: hidden;
+  border-radius: 5px;
+  position: absolute;
+  top: 0px;
+  right: 15px;
+  padding: 2px;
+  text-align: right;
+}
+
+.code_example:hover .actions {
+  visibility: visible;
+}
+
+.code_example:hover .live_marker {
+  visibility: hidden;
+}
+
+.code_example .actions p {
+  width: auto;
+  margin-bottom: 0px;
+}
+
+.code_example .actions span {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 2px 4px;
+  display: inline-block;
+  color: #49d;
+  cursor: pointer;
+}
+
+.code_example .actions .shortcut_key {
+  font-size: 11px;
+  font-weight: bold;
+  color: #ccc;
+  color: rgba(255,255,255,0.5);
+  float: left;
+  text-align: right;
+  margin: 2px 0px 0px 0px;
+}
+
+.code_example .error {
+  color: #c00;
+}
+
+.code_example {
+  clear: left;
+  position: relative;
+  line-height: 1.3;
+}
+
+.code_example pre span {
+  display: inline;
+}
+
+.code_example .live_marker {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #db0;
+  margin: 0px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+
+#json_stage {
+  display: none;
+  background: #222;
+  color: #fff;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  font-size: 14px;
+  height: 100%;
+  padding: 10px 10px 0px 10px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  box-shadow: 5px 0px 5px rgba(0,0,0,0.5);
+  overflow: auto;
+}
+
+#json_stage.loading {
+  background: #222 url(images/loading.gif) no-repeat center center;
+}
+
+#json_stage .route {
+  color: #eb4;
+  margin-bottom: 15px;
+  font-size: 17px;
+  max-width: 700px;
+}
+
+#json_stage .output {
+  max-width: 700px;
+  white-space: pre-wrap;
+}
+
+
+
+
+
+
   </style>
   <link rel="stylesheet" href="stylesheets/sh_custom.css" type="text/css" />
 </head>
 
-<body>
-  <a href="https://github.com/andrewplummer/APIConnect"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+<body spellcheck="false">
 
   <div id="container">
 
-    <div class="download">
-      <a href="https://github.com/andrewplummer/APIConnect/zipball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
-      <a href="https://github.com/andrewplummer/APIConnect/tarball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
+    <div class="buttons">
+      <a id="github" href="https://github.com/andrewplummer/APIConnect">Github</a>
+      <a id="download" href="https://raw.github.com/andrewplummer/APIConnect/master/lib/apiconnect.js" title="#specs">Download</a>
+    </div>
+
+    <div id="share">
+      <div id="google">
+        <g:plusone size="tall"></g:plusone>
+      </div>
+      <div id="twitter">
+        <a href="http://twitter.com/share" class="twitter-share-button" data-count="vertical">Tweet</a>
+        <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+      </div>
+      <div id="facebook">
+        <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#appId=192585364124839&amp;xfbml=1"></script><fb:like href="" send="false" layout="box_count" width="50" show_faces="true" font=""></fb:like>
+     </div>
     </div>
 
     <h1>
       <a href="https://github.com/andrewplummer/APIConnect">APIConnect</a>
     </h1>
 
-    <p>APIConnect provides a very easy and intuitive way to interact with APIs, especially those hosted on other domains. Setup is as simple as creating the instance, specifying the domain, and connecting the route:</p>
+    <p>APIConnect is a Javascript class that provides a very easy and intuitive way to interact with APIs, especially those hosted on other domains. Setup is as simple as creating the instance, specifying the domain, connecting the route, and running it. APIConnect works in all major browsers and requires jQuery.</p>
 
-<pre class="sh_javascript">
+<div class="code_example console no_autorun show_live">
 var api = new APIConnect();
-api.domain('api.twitter.com');
-api.connect('statuses/home_timeline');
-</pre>
-    <p>After this is done the route can be called through the instance:</p>
-<pre class="sh_javascript">
-api.getHomeTimeline();
-<span class="result">&gt; GET http://api.twitter.com/statuses/home_timeline.json</span>
-</pre>
-    <p>The route is automatically set up and accessible through a camelized method name in the api object. Calling the route is as simple as calling the method.</p>
+api.domain('graph.facebook.com');
+api.connect(':object_id');
+api.getObject({ object_id: page_id }).then(displayJSON);
+</div>
 
 <h2>Connecting Routes</h2>
-<p>Any route can be set up with any level of context. These contexts are always optional, and will only be added if they exist when passed as params:</p>
-<pre class="sh_javascript">
-api.connect(':user/:list_id/members');
-api.getMembers({ user: 'bob', list_id: 5 });
+<p>Any route can have any number of params in the base URL (contexts). These contexts are always optional, and will only be added if they exist in the params object when the route is called.</p>
+<p>Once the route is connected, calling it is as simple as calling a camelized method on the instance. When making the call, the first argument is the params object, and the second argument is for "options". Here you can specify options for both APIConnect as well as any valid option for jQuery.ajax, meaning all standard callbacks will work.</p>
+<div class="code_example console no_autorun show_live">
+var api = new APIConnect({ domain: 'graph.facebook.com' });
+api.connect(':object_id');
+api.getObject({ object_id: page_id }, { complete: displayJSON });
+</div>
+<p>API calls also pass back jQuery deferred objects, so these can be used as well.</p>
+<div class="code_example console no_autorun show_live">
+var api = new APIConnect({ domain: 'graph.facebook.com' });
+api.connect(':object_id');
+api.getObject({ object_id: page_id }).then(displayJSON);
+</div>
+<p>Both params or options can also be made "global" or instance-wide by specifying them directly on the instance. They will be applied to all routes (but can be overwritten with local params/options).</p>
+<div class="code_example console no_autorun show_live">
+var api = new APIConnect({ domain: 'graph.facebook.com' });
+api.params({ access_token: app_access_token });
+api.options({ complete: displayJSON });
+api.connect(':object_id');
+api.getObject({ object_id: page_id });
+</div>
+<p>The 4 main HTTP verbs, "GET", "POST", "PUT", and "DELETE", are allowed in routes, and map to humanized verbs "get", "create", "update", and "destroy", respectively. "GET" is the implied default.</p>
+<p>This code is actually posting to a <a href="http://www.facebook.com/pages/APIConnect-Test/339240909450916" target="_blank">live Facebook page</a> through APIConnect!</p>
+<div class="code_example console no_autorun show_live">
+var api = new APIConnect({ domain: 'graph.facebook.com' });
+api.param('access_token', app_access_token);
+api.connect('POST :id/feed');
 
-<span class="result">&gt; GET http://domain/bob/5/members.json</span>
-</pre>
-<p>The 4 main HTTP verbs, "GET", "POST", "PUT", and "DELETE", are allowed in routes, and map to "get", "create", "update", and "destroy", respectively. "GET" is the implied default:</p>
-<pre class="sh_javascript">
-api.connect('POST :user/:list_id/members');
-api.connect('DELETE :user/:list_id/members');
-
-api.createMember({ user: 'bob', list_id: 5 });
-<span class="result">&gt; POST http://domain/bob/3/members</span>
-
-api.destroyMember({ user: 'bob', list_id: 5 });
-<span class="result">&gt; DELETE http://domain/bob/5/members</span>
-</pre>
-<p>"resource" serves as a shortcut to all 4 HTTP verbs:</p>
-<pre class="sh_javascript">
+var message = "Hello from APIConnect! It's " + new Date().toString();
+api.createFeed({ id: page_id, message: message }, { complete: displayJSON });
+</div>
+<p>The camelized method name is a combination of the humanied HTTP verb and the last non-parameter fragment in the route. In the examples, a "non-parameter fragment" is <span class="code">photos</span> as opposed to a "parameter fragment" <span class="code">:photo_type</span>, etc. If no non-parameter fragments exist, the last parameter fragment will be used instead.</p>
+<p>If this is still not good enough, the entire method name can easily be overridden using the <span class="code">as</span> option when connecting the route.</p>
+<div class="code_example console no_autorun show_live">
+var api = new APIConnect({ domain: 'graph.facebook.com' });
+api.connect(':object_id/photos/:photo_type', { as: 'getImages' });
+api.getImages({ object_id: page_id, photo_type: 'profile' }, { complete: displayJSON });
+</div>
+<p>Params can also be "burned in" when connecting routes, allowing even more expressive statements.</p>
+<div class="code_example console no_autorun show_live">
+var api = new APIConnect({ domain: 'graph.facebook.com' });
+var p = { photo_type: 'profile' };
+api.connect(':object_id/photos/:photo_type', { params: p, as: 'getProfileImages' });
+api.getProfileImages({ object_id: page_id }, { complete: displayJSON });
+</div>
+<p>"resource" serves as a shortcut to all 4 HTTP verbs.</p>
+<div class="code_example inactive">
 api.resource('member');
 
-api.getMember();     <span class="dim">&gt; GET     http://domain/member.json</span>
-api.createMember();  <span class="dim">&gt; POST    http://domain/member.json</span>
-api.updateMember();  <span class="dim">&gt; PUT     http://domain/member.json</span>
-api.destroyMember(); <span class="dim">&gt; DELETE  http://domain/member.json</span>
-</pre>
-<p>Members of these routes can be limited using <span class="code">only</span> and <span class="code">exclude</span>:</p>
-<pre class="sh_javascript">
+api.getMember();     <span class="dim">// GET     http://domain/member.json</span>
+api.createMember();  <span class="dim">// POST    http://domain/member.json</span>
+api.updateMember();  <span class="dim">// PUT     http://domain/member.json</span>
+api.destroyMember(); <span class="dim">// DELETE  http://domain/member.json</span>
+</div>
+<p>Members of these routes can be limited using <span class="code">only</span> and <span class="code">exclude</span>.</p>
+<div class="code_example inactive">
 api.resource('member', { only: 'show,update' });
 
-api.getMember();     <span class="dim">&gt; GET     http://domain/member.json</span>
-api.updateMember();  <span class="dim">&gt; PUT     http://domain/member.json</span>
+api.getMember();     <span class="dim">// GET     http://domain/member.json</span>
+api.updateMember();  <span class="dim">// PUT     http://domain/member.json</span>
 
 api.resource('member', { exclude: 'show,update' });
 
-api.createMember();  <span class="dim">&gt; POST    http://domain/member.json</span>
-api.destroyMember(); <span class="dim">&gt; DELETE  http://domain/member.json</span>
-</pre>
-<p>If a resource is a collection, passing <span class="code">collection: true</span> in the options for "resource" will create standard collection routes including an "index" method:</p>
-<pre class="sh_javascript">
+api.createMember();  <span class="dim">// POST    http://domain/member.json</span>
+api.destroyMember(); <span class="dim">// DELETE  http://domain/member.json</span>
+</div>
+<p>If a resource is a collection, passing <span class="code">collection: true</span> in the options for "resource" will create standard collection routes including an "index" method.</p>
+<div class="code_example inactive">
 api.resource('status', { collection: true });
 
-api.getStatus();              <span class="dim">&gt; GET     http://domain/status.json</span>
-api.getStatus({ id: 3});      <span class="dim">&gt; GET     http://domain/status/3.json</span>
-api.createStatus();           <span class="dim">&gt; POST    http://domain/status.json</span>
-api.updateStatus({ id: 3 });  <span class="dim">&gt; PUT     http://domain/status/3.json</span>
-api.destroyStatus({ id: 3 }); <span class="dim">&gt; DELETE  http://domain/status/3.json</span>
-</pre>
-<p>If a "collection" is omitted, it will attempt to be intelligently detected by the pluralization of the resource passed. In this case, pluralization of the methods will also use intelligent detection:</p>
-<pre class="sh_javascript">
+api.getStatus();              <span class="dim">// GET     http://domain/status.json</span>
+api.getStatus({ id: 3});      <span class="dim">// GET     http://domain/status/3.json</span>
+api.createStatus();           <span class="dim">// POST    http://domain/status.json</span>
+api.updateStatus({ id: 3 });  <span class="dim">// PUT     http://domain/status/3.json</span>
+api.destroyStatus({ id: 3 }); <span class="dim">// DELETE  http://domain/status/3.json</span>
+</div>
+<p>If <span class="code">collection</span> is omitted, it will attempt to be intelligently detected by the pluralization of the resource passed.</p>
+<div class="code_example inactive">
 api.resource('members');
 
-api.getMembers();              <span class="dim">&gt; GET     http://domain/members.json</span>
-api.getMembers({ id: 3});      <span class="dim">&gt; GET     http://domain/members/3.json</span>
-api.createMembers();           <span class="dim">&gt; POST    http://domain/members.json</span>
-api.updateMembers({ id: 3 });  <span class="dim">&gt; PUT     http://domain/members/3.json</span>
-api.destroyMembers({ id: 3 }); <span class="dim">&gt; DELETE  http://domain/members/3.json</span>
-</pre>
-
-
-<h2>Calling Routes</h2>
-<p>When making the call, the first object is the params. This will most commonly be added to the end of the query string, but in cases where the route contains params, it will be placed here instead and removed from the query string:</p>
-<pre class="sh_javascript">
-api.connect('statuses/home_timeline');
-api.getHomeTimeline({ foo: 'bar' });
-<span class="result">&gt; GET http://domain/statuses/home_timeline?foo=bar</span>
-
-api.connect('tweets/:tweet_id');
-api.getTweet({ tweet_id: 7 });
-<span class="result">&gt; GET http://domain/tweets/7</span>
-</pre>
-<p>The second object passed is an options object. APIConnect options are passed through this object. Additionally, any valid option for jQuery.ajax is also valid here, meaning all the standard callbacks will work:</p>
-<pre class="sh_javascript">
-api.getHomeTimeline({}, {
-  success: function() {
-    // Congratulations!
-  },
-  error: function() {
-    // Oh noeee... failure!
-  }
-});
-</pre>
-<p>API calls also pass back jQuery deferred objects, so these can be used as well:</p>
-<pre class="sh_javascript">
-api.getHomeTimeline().then(function() {
-  // You're done!
-});
-</pre>
+api.getMembers();              <span class="dim">// GET     http://domain/members.json</span>
+api.getMembers({ id: 3});      <span class="dim">// GET     http://domain/members/3.json</span>
+api.createMembers();           <span class="dim">// POST    http://domain/members.json</span>
+api.updateMembers({ id: 3 });  <span class="dim">// PUT     http://domain/members/3.json</span>
+api.destroyMembers({ id: 3 }); <span class="dim">// DELETE  http://domain/members/3.json</span>
+</div>
 <h2>Options</h2>
-<p>Options are passed in when making the call, and can be overridden there, however instance-wide options are set on the object itself:</p>
-<pre class="sh_javascript">
+<p>Options are passed in when making the call, and can be overridden there, however instance-wide options are set on the object itself.</p>
+<div class="code_example inactive">
 api.option('headers', { myCustomHeaderName: 'myCustomHeaderValue' });
 
 api.options({
@@ -202,81 +383,122 @@ api.options({
     }
   }
 });
-</pre>
-<p>Additionally the basic options "domain", "protocol", "port", "timeout", "cors", and "jsonp" can be set directly on the instance:</p>
-<pre class="sh_javascript">
+</div>
+<p>Additionally the basic options "domain", "protocol", "port", "timeout", "cors", and "jsonp" can be set directly on the instance. When setting options, the instance itself will be returned, allowing method-chaining just like jQuery objects.</p>
+<div class="code_example inactive">
 api.domain('localhost');
 api.port('4000');
 api.cors(false);
-</pre>
-<p>All such options are both getters and setters. Passing no arguments will return their current value:</p>
-<pre class="sh_javascript">
+</div>
+<p>All such options are both getters and setters. Passing no arguments will return their current value.</p>
+<div class="code_example inactive">
 api.domain();     // "localhost"
 api.port('4000'); // "4000"
 api.cors(false);  // false
-</pre>
+</div>
 
 <h2>Cross-domain ajax and JSONP</h2>
-<p>APIConnect will by default attempt to use CORS (cross-origin resource sharing). For this to work, the API you're working with needs to be sending the correct response headers. If your calls are returning a 200-level response but no data is coming in, most likely CORS is not supported and needs to be disabled:</p>
-<pre class="sh_javascript">
+<p>APIConnect will by default attempt to use CORS (cross-origin resource sharing). For this to work, the API you're working with needs to be sending the correct response headers. If your calls are returning a 200-level response but no data is coming in, most likely CORS is not supported and needs to be disabled.</p>
+<p>Turning off CORS support will fall back to JSONP, which also needs to be enabled on the API side.</p>
+<div class="code_example console no_autorun show_live">
+var api = new APIConnect({ domain: 'graph.facebook.com' });
 api.cors(false);
-</pre>
-<p>Turning off CORS support will fall back to JSONP, which also needs to be enabled on the API side:</p>
-<pre class="sh_javascript">
-api.cors(false);
-api.connect('users');
-api.getUsers();
-<span class="result">&gt; GET http://domain/users?callback=jQuery161007680199619937322_1330586429472</span>
-</pre>
+api.connect(':object_id');
+api.getObject({ object_id: page_id }).then(displayJSON);
+</div>
 <p>Certain older browsers (earlier versions of IE, etc) do not support CORS. In this case, APIConnect will fall back to JSONP <em>if</em> the request is on another domain. This means that if both CORS and JSONP are enabled on the API server, all browsers will work with APIConnect of the box. However if JSONP is not supported, the request must be on the same domain or it will fail outright.</p>
 
-<h2>Defaults</h2>
-<p>Params can be "burned in" by passing them at the point of connecting the route. They will be used whenever calling that route. Passing "as" to override the method name can make calls more expressive:</p>
-<pre class="sh_javascript">
-api.connect('tasks', { params: { completed: true }, as: 'getCompletedTasks' });
-
-api.getCompletedTasks();
-<span class="result">&gt; GET http://domain/tasks?completed=true</span>
-</pre>
-<p>Params can also be made global, passing it for all routes when executed. Any global params or options can always be overridden again locally with the passed objects:</p>
-<pre class="sh_javascript">
-api.param('api_key', 'foo');
-api.getTweets();
-<span class="result">&gt; GET http://domain/tweets?api_key=foo</span>
-
-api.params({ 'token': 'bar' });
-api.getTweets();
-<span class="result">&gt; GET http://domain/tweets?token=bar</span>
-</pre>
-
 <h2>Advanced</h2>
-<p>If you have many routes with the same context you can hold onto it so as not to repeat yourself:</p>
-<pre class="sh_javascript">
+<p>If you have many routes with the same context you can hold onto it so as not to repeat yourself.</p>
+<div class="code_example inactive">
 api.context(':user', function() {
   api.connect('tasks');
   api.connect('images');
   api.connect('profile');
   // ...
 });
-</pre>
-<p>Results from an api call can be cached locally for the duration of the page load. Only get requests will be cached and only if the params match exactly. If cached, the calls will resolve successfully immediately:</p>
-<pre class="sh_javascript">
-api.getStatus({ name: 'bob' }, { cache: true }).then(f);
-
-// Later...
-api.getStatus({ name: 'bob' }, { cache: true }); // Second call will resolve instantly.
-</pre>
-
-
-
-    <p>Download this project as either <a href="https://github.com/andrewplummer/APIConnect/zipball/master">zip</a> or <a href="https://github.com/andrewplummer/APIConnect/tarball/master">tar, or clone with <a href="http://git-scm.com">Git</a> by running:</p>
-      <pre>$ git clone git://github.com/andrewplummer/APIConnect</pre>
+</div>
+<p>Results from an api call can be cached locally for the duration of the page load. Only GET requests will be cached and only if the params match exactly. If cached, the calls will resolve successfully immediately.</p>
+<div class="code_example console no_autorun show_live">
+api = api || new APIConnect({ domain: 'graph.facebook.com' });
+api.connect(':object_id');
+api.getObject({ object_id: page_id }, { cache: true }).then(displayJSON);
+</div>
+</div>
+  <div id="json_stage">
+    <div class="route"></div>
+    <div class="output"></div>
   </div>
 
-  <script src="javascripts/sh_main.min.js" type="text/javascript"></script>
-  <script src="javascripts/sh_javascript.min.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js?20120127"></script>
+  <!--<script src="https://raw.github.com/andrewplummer/APIConnect/master/lib/apiconnect.js"></script>-->
+  <script src="lib/apiconnect.js"></script>
+  <script src="javascripts/sh_main.min.js"></script>
+  <script src="javascripts/sh_javascript.min.js"></script>
+  <script src="javascripts/code.js"></script>
+  <script src="javascripts/beautify.js"></script>
   <script type="text/javascript">
-    sh_highlightDocument();
+
+    var api;
+    var app_id = '189795071129074';
+    var page_id = '339240909450916';
+    var app_access_token = 'AAACsnhvLdfIBAJZCCgC14WSKQYcef9lCapTzGspect7bOupTHbsko9tmLZC1H1y3TOZCDFFZBCEfkpD6OZBII4wV20bPZA5HdSWpOz9CKeBQZDZD';
+
+    stage = $('#json_stage');
+
+    $('.code_example').activateCodeExample();
+    $(document).click(hideJsonStage);
+    $(document).ajaxStart(function() {
+      $('.output', stage).css('visibility', 'hidden');
+      $('.route', stage).empty();
+      stage.addClass('loading');
+    });
+    $(document).ajaxComplete(function(event, sm, xhr) {
+        $('.output', stage).css('visibility', 'visible');
+        stage.removeClass('loading');
+        $('#json_stage .route').text(xhr.type + ' ' + xhr.url);
+    });
+    $('#json_stage').click(function() { return false; });
+    $('.actions .run').click(function() { return false; });
+    function displayJSON(json) {
+      if(json.responseText) {
+        json = JSON.parse(json.responseText);
+      }
+      var stringified = window.JSON ? js_beautify(JSON.stringify(json)) : json.toString();
+      $('#json_stage .output').text(stringified);
+      showJsonStage();
+    }
+    var stageIsIn = false;
+
+    function showJsonStage() {
+      if(stageIsIn) return;
+      stage.css('left', -stage.width() - 40);
+      stage.stop(true, true).show().animate({ left: 0 }, { duration: 200, easing: 'swing' });
+      stageIsIn = true;
+    }
+
+    function hideJsonStage() {
+      stage.stop(true, true).animate({ left: -stage.width() - 40 }, { duration: 200, easing: 'swing', complete: function(){
+        stageIsIn = false;
+        stage.hide();
+      }});
+    }
+
+    // Patching for JSONP URL detection
+    var $AJAX = $.ajax;
+    $.ajax = function(url, o) {
+      var deferred = $AJAX.apply(this, arguments);
+      if(o.dataType == 'jsonp') {
+        $(document).trigger('ajaxStart', []);
+        deferred.always(function(data, state, xhr) {
+          $(document).trigger('ajaxComplete', [data, this]);
+        });
+      }
+      return deferred;
+    }
+// TODO: CALLBACK FUNCTION SHORTCUT FOR "THEN"
+// TODO: ALLOW DIRECT BURN-IN of params
+
   </script>
 </body>
 </html>
