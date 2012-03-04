@@ -289,19 +289,19 @@ api.getObject({ object_id: page_id }).then(displayJSON);
 <p>Any route can have any number of params in the base URL (contexts). These contexts are always optional, and will only be added if they exist in the params object when the route is called.</p>
 <p>Once the route is connected, calling it is as simple as calling a camelized method on the instance. When making the call, the first argument is the params object, and the second argument is for "options". Here you can specify options for both APIConnect as well as any valid option for jQuery.ajax, meaning all standard callbacks will work.</p>
 <div class="code_example console no_autorun show_live">
-var api = new APIConnect({ domain: 'graph.facebook.com' });
+var api = new APIConnect('graph.facebook.com');
 api.connect(':object_id');
 api.getObject({ object_id: page_id }, { complete: displayJSON });
 </div>
 <p>API calls also pass back jQuery deferred objects, so these can be used as well.</p>
 <div class="code_example console no_autorun show_live">
-var api = new APIConnect({ domain: 'graph.facebook.com' });
+var api = new APIConnect('graph.facebook.com');
 api.connect(':object_id');
 api.getObject({ object_id: page_id }).then(displayJSON);
 </div>
 <p>Both params or options can also be made "global" or instance-wide by specifying them directly on the instance. They will be applied to all routes (but can be overwritten with local params/options).</p>
 <div class="code_example console no_autorun show_live">
-var api = new APIConnect({ domain: 'graph.facebook.com' });
+var api = new APIConnect('graph.facebook.com');
 api.params({ access_token: app_access_token });
 api.options({ complete: displayJSON });
 api.connect(':object_id');
@@ -310,7 +310,7 @@ api.getObject({ object_id: page_id });
 <p>The 4 main HTTP verbs, "GET", "POST", "PUT", and "DELETE", are allowed in routes, and map to humanized verbs "get", "create", "update", and "destroy", respectively. "GET" is the implied default.</p>
 <p>This code is actually posting to a <a href="http://www.facebook.com/pages/APIConnect-Test/339240909450916" target="_blank">live Facebook page</a> through APIConnect!</p>
 <div class="code_example console no_autorun show_live">
-var api = new APIConnect({ domain: 'graph.facebook.com' });
+var api = new APIConnect('graph.facebook.com');
 api.param('access_token', app_access_token);
 api.connect('POST :id/feed');
 
@@ -320,13 +320,13 @@ api.createFeed({ id: page_id, message: message }, { complete: displayJSON });
 <p>The camelized method name is a combination of the humanied HTTP verb and the last non-parameter fragment in the route. In the examples, a "non-parameter fragment" is <span class="code">photos</span> as opposed to a "parameter fragment" <span class="code">:photo_type</span>, etc. If no non-parameter fragments exist, the last parameter fragment will be used instead.</p>
 <p>If this is still not good enough, the entire method name can easily be overridden using the <span class="code">as</span> option when connecting the route.</p>
 <div class="code_example console no_autorun show_live">
-var api = new APIConnect({ domain: 'graph.facebook.com' });
+var api = new APIConnect('graph.facebook.com');
 api.connect(':object_id/photos/:photo_type', { as: 'getImages' });
 api.getImages({ object_id: page_id, photo_type: 'profile' }, { complete: displayJSON });
 </div>
 <p>Params can also be "burned in" when connecting routes, allowing even more expressive statements.</p>
 <div class="code_example console no_autorun show_live">
-var api = new APIConnect({ domain: 'graph.facebook.com' });
+var api = new APIConnect('graph.facebook.com');
 var p = { photo_type: 'profile' };
 api.connect(':object_id/photos/:photo_type', { params: p, as: 'getProfileImages' });
 api.getProfileImages({ object_id: page_id }, { complete: displayJSON });
@@ -402,7 +402,7 @@ api.cors(false);  // false
 <p>APIConnect will by default attempt to use CORS (cross-origin resource sharing). For this to work, the API you're working with needs to be sending the correct response headers. If your calls are returning a 200-level response but no data is coming in, most likely CORS is not supported and needs to be disabled.</p>
 <p>Turning off CORS support will fall back to JSONP, which also needs to be enabled on the API side.</p>
 <div class="code_example console no_autorun show_live">
-var api = new APIConnect({ domain: 'graph.facebook.com' });
+var api = new APIConnect('graph.facebook.com');
 api.cors(false);
 api.connect(':object_id');
 api.getObject({ object_id: page_id }).then(displayJSON);
@@ -421,7 +421,7 @@ api.context(':user', function() {
 </div>
 <p>Results from an api call can be cached locally for the duration of the page load. Only GET requests will be cached and only if the params match exactly. If cached, the calls will resolve successfully immediately.</p>
 <div class="code_example console no_autorun show_live">
-api = api || new APIConnect({ domain: 'graph.facebook.com' });
+api = api || new APIConnect('graph.facebook.com');
 api.connect(':object_id');
 api.getObject({ object_id: page_id }, { cache: true }).then(displayJSON);
 </div>
