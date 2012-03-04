@@ -1238,4 +1238,13 @@
     assertRouteCalled(api, 'http://domain/chocolate', 'GET', { moo: 'foo' })
   });
 
+  test('last function can be a direct "then" callback shortcut', function() {
+    api.connect('chocolate');
+    api.getChocolate(function() {
+      counter++;
+    });
+    assertRouteCalled(api, 'http://domain/chocolate', 'GET');
+    equals(counter, 1, 'Counter should have incremented');
+  });
+
 })();
