@@ -28,6 +28,13 @@
            (setting == 'jsonp' || (setting == 'jsonp-except-get' && method != 'GET'));
   }
 
+  function withoutCorsSupport(fn) {
+    var was = $.support.cors;
+    $.support.cors = false;
+    fn();
+    $.support.cors = was;
+  }
+
   function assertRouteCalled(context, url, method, params) {
     var request = capturedRequests[capturedRequests.length - 1],
         expectedParamsLength = 0,
@@ -1128,19 +1135,13 @@
   });
 
   test('params as part of connect string', function() {
-    api.connect('GET /memory PARAMS skip=true');
-    api.getMemory();
-    assertRouteCalled(api, 'http://domain/memory', 'GET', { skip: true })
-  });
-
-  test('with can also be used for params string', function() {
-    api.connect('GET /memory WITH skip=true');
+    api.connect('GET /memory?skip=true');
     api.getMemory();
     assertRouteCalled(api, 'http://domain/memory', 'GET', { skip: true })
   });
 
   test('connect with WITH and AS', function() {
-    api.connect('GET /memory WITH skip=true AS foobar');
+    api.connect('GET /memory?skip=true AS foobar');
     api.foobar();
     assertRouteCalled(api, 'http://domain/memory', 'GET', { skip: true })
   });
@@ -1204,6 +1205,46 @@
   test('params will return all params', function() {
     equals(typeof api.params(), 'object', 'no arguments to params returns the object')
     equals(typeof api.options(), 'object', 'same for options')
+  });
+
+  test('will switch to JSONP if no browser support for CORS', function() {
+    withoutCorsSupport(function() {
+      api.connect('DELETE user');
+      api.destroyUser();
+      equals(capturedRequests[0].params._method, 'DELETE', 'Last call was JSONP');
+    });
+  });
+
+  test('same domain will not use JSONP', function() {
+    withoutCorsSupport(function() {
+      api.domain(window.location.hostname);
+      api.port(window.location.port);
+      api.connect('DELETE user');
+      api.destroyUser();
+      equals(capturedRequests[0].params._method, undefined, 'Last call was not JSONP');
+    });
+  });
+
+  test('constructor accepts a single domain string', function() {
+    api = new APIConnect('threemusketeers.com');
+    api.connect('chocolate');
+    api.getChocolate();
+    assertRouteCalled(api, 'http://threemusketeers.com/chocolate', 'GET')
+  });
+
+  test('allow direct burn-in of params', function() {
+    api.connect('chocolate?moo=foo');
+    api.getChocolate();
+    assertRouteCalled(api, 'http://domain/chocolate', 'GET', { moo: 'foo' })
+  });
+
+  test('last function can be a direct "then" callback shortcut', function() {
+    api.connect('chocolate');
+    api.getChocolate(function() {
+      counter++;
+    });
+    assertRouteCalled(api, 'http://domain/chocolate', 'GET');
+    equals(counter, 1, 'Counter should have incremented');
   });
 
 })();
