@@ -1,14 +1,27 @@
 (function() {
 
 
+
+  if(typeof QUnit !== 'undefined') {
+    testModule = QUnit.module;
+  }
+
   // Local vars
 
-  var api, capturedRequests = [], counter;
+  var api, capturedRequests = [], counter, isNode;
 
-  $.ajax = captureRequest;
+  isNode = typeof exports !== 'undefined' && typeof module !== 'undefined' && module.exports;
 
+  if(isNode) {
+  } else {
+    setupClient();
+  }
 
   // Utility methods
+
+  function setupClient() {
+    $.ajax = captureRequest;
+  }
 
   function captureRequest(url, options) {
     capturedRequests.push({ url: url, options: options, params: options.data, method: options.type });
@@ -70,7 +83,7 @@
     counter++;
   }
 
-  module('APIConnect', {
+  testModule('APIConnect', {
     setup: function() {
       api = new APIConnect();
       api.domain('domain');
@@ -80,7 +93,7 @@
   });
 
   test('Domain Setup', function() {
-    strictEqual(api.domain('test'), api, 'APIConnect#domain setting should return the instance');
+    equal(api.domain('test'), api, 'APIConnect#domain setting should return the instance');
     equal(api.domain(), 'test', ' APIConnect#domain calling without arguments should return the field');
   });
 
