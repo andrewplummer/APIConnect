@@ -1,0 +1,294 @@
+
+// The scope when none is set.
+nullScope = (function(){ return this; }).call();
+
+var results;
+var currentTest;
+var moduleName;
+var moduleSetupMethod;
+var moduleTeardownMethod;
+
+var syncTestsRunning = true;
+
+// Capturing the timers here b/c Mootools (and maybe other frameworks) may clear a timeout that
+// it kicked off after this script is loaded, which would throw off a simple incrementing mechanism.
+var capturedTimers = [];
+
+// This declaration has the effect of pulling setTimeout/clearTimeout off the window's prototype
+// object and setting it directly on the window itself. From here it can be globally reset while
+// retaining the reference to the native setTimeout method. More about this here:
+//
+// http://www.adequatelygood.com/2011/4/Replacing-setTimeout-Globally
+
+nullScope.setTimeout = nullScope.setTimeout;
+nullScope.clearTimeout = nullScope.clearTimeout;
+
+var nativeSetTimeout = nullScope.setTimeout;
+var nativeClearTimeout = nullScope.clearTimeout;
+
+var testStartTime;
+var runtime;
+
+
+// Arrays and objects must be treated separately here because in IE arrays with undefined
+// elements will not pass the .hasOwnProperty check. For example [undefined].hasOwnProperty('0')
+// will report false.
+var deepEqual = function(one, two) {
+  if(one.length && two.length) {
+    return arrayEqual(one, two);
+  } else {
+    return objectEqual(one, two);
+  }
+}
+
+var arrayEqual = function(one, two) {
+  var i, result = true;
+  // This MUST be .each as we can have very large sparse arrays in the tests!
+  one.each(function(a, i) {
+    if(!isEqual(one[i], two[i])) {
+      result = false;
+    }
+  });
+  return result && one.length === two.length;
+}
+
+var arrayIndexOf = function(arr, obj) {
+  for(var i = 0; i < arr.length; i++) {
+    if(arr[i] === obj) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+var objectEqual = function(one, two) {
+  var onep = 0, twop = 0, key;
+  for(key in one) {
+    if(!one.hasOwnProperty(key)) continue;
+    onep++;
+    if(!isEqual(one[key], two[key])) {
+      return false;
+    }
+  }
+  for(key in two) {
+    if(!two.hasOwnProperty(key)) continue;
+    twop++;
+  }
+  return onep === twop && one.toString() === two.toString();
+}
+
+var isEqual = function(one, two) {
+  if(one === nullScope && two === nullScope) {
+    // Null scope should always be a strict equal check
+    return true;
+  } else if(typeof two == 'number' && typeof one == 'number' && isNaN(two) && isNaN(one)) {
+    // NaN is NaN: equal
+    return true;
+  } else if(typeof two == 'object' && typeof one == 'object' && two != null && one != null && deepEqual(two, one)) {
+    // Deeply equal
+    return true;
+  } else if(two === null && one === null) {
+    // null is null: equal
+    return true;
+  } else if(two === undefined && one === undefined) {
+    // undefined is undefined: equal
+    return true;
+  } else if(one === two) {
+    // Strictly equal
+    return true;
+  } else {
+    return false;
+  }
+}
+
+var addFailure = function(actual, expected, message, stack, warning) {
+  var meta = getMeta(stack);
+  currentTest.failures.push({ actual: actual, expected: expected, message: message, file: meta.file, line: meta.line, col: meta.col, warning: !!warning });
+}
+
+var getMeta = function(stack) {
+  var level = 4;
+  if(stack !== undefined) {
+    level += stack;
+  }
+  var e = new Error();
+  if(!e.stack) {
+    return {};
+  }
+  var s = e.stack.split(/@|at/m);
+  var match = s[level].match(/(.+\.js):(\d+)(?::(\d+))?/);
+  if(!match) match = [];
+  return { file: match[1], line: match[2], col: match[3] };
+}
+
+var checkCanFinish = function() {
+  if(!syncTestsRunning && capturedTimers.length == 0) {
+    testsFinished();
+    restoreNativeTimeout();
+  }
+}
+
+var testsStarted = function() {
+  if(typeof testsStartedCallback != 'undefined') {
+    testsStartedCallback(results);
+  }
+  if(environment == 'node') {
+    console.info('\n----------------------- STARTING TESTS ----------------------------\n');
+  }
+  testStartTime = new Date();
+}
+
+var testsFinished = function() {
+  runtime = new Date() - testStartTime;
+  if(typeof testsFinishedCallback != 'undefined') {
+    testsFinishedCallback(results, runtime);
+  }
+  if(environment == 'node') {
+    displayResults();
+  }
+  results = [];
+}
+
+var displayResults = function() {
+  var i, j, failure, totalAssertions = 0, totalFailures = 0;
+  for (i = 0; i < results.length; i += 1) {
+    totalAssertions += results[i].assertions;
+    totalFailures += results[i].failures.length;
+    for(j = 0; j < results[i].failures.length; j++) {
+      failure = results[i].failures[j];
+      console.info('\n'+ (j + 1) + ') Failure:');
+      console.info(failure.message);
+      console.info('Expected: ' + JSON.stringify(failure.expected) + ' but was: ' + JSON.stringify(failure.actual));
+      console.info('File: ' + failure.file + ', Line: ' + failure.line, ' Col: ' + failure.col + '\n');
+    }
+  };
+  var time = (runtime / 1000);
+  console.info(results.length + ' tests, ' + totalAssertions + ' assertions, ' + totalFailures + ' failures, ' + time + 's\n');
+}
+
+test = function(name, fn) {
+  if(moduleSetupMethod) {
+    moduleSetupMethod();
+  }
+  if(!results) {
+    results = [];
+    testsStarted();
+  }
+  currentTest = {
+    name: name,
+    assertions: 0,
+    failures: []
+  };
+  try {
+    fn.call();
+  } catch(e) {
+    console.info(e.stack);
+  }
+  results.push(currentTest);
+  if(moduleTeardownMethod) {
+    moduleTeardownMethod();
+  }
+}
+
+setTimeout = function(fn, delay) {
+  var timer = nativeSetTimeout(function() {
+    fn.apply(this, arguments);
+    removeCapturedTimer(timer);
+    checkCanFinish();
+  }, delay);
+  capturedTimers.push(timer);
+  return timer;
+}
+
+clearTimeout = function(timer) {
+  removeCapturedTimer(timer);
+  return nativeClearTimeout(timer);
+}
+
+restoreNativeTimeout = function() {
+  setTimeout = nativeSetTimeout;
+}
+
+var removeCapturedTimer = function(timer) {
+  var index = arrayIndexOf(capturedTimers, timer);
+  if(index !== -1) {
+    capturedTimers.splice(index, 1);
+  }
+};
+
+testModule = function(name, options) {
+  moduleName = name;
+  moduleSetupMethod = options.setup;
+  moduleTeardownMethod = options.teardown;
+}
+
+equal = function(actual, expected, message, exceptions, stack) {
+  exceptions = exceptions || {};
+  if(environment in exceptions) {
+    expected = exceptions[environment];
+  }
+  currentTest.assertions++;
+  if(!isEqual(actual, expected)) {
+    addFailure(actual, expected, message, stack);
+  }
+}
+
+notEqual = function(actual, expected, message, exceptions) {
+  equal(actual !== expected, true, message + ' | strict equality', exceptions, 1);
+}
+
+equalWithWarning = function(expected, actual, message) {
+  if(expected != actual) {
+    addFailure(actual, expected, message, null, true);
+  }
+}
+
+equalWithMargin = function(actual, expected, margin, message) {
+  equal((actual > expected - margin) && (actual < expected + margin), true, message, null, 1);
+}
+
+raisesError = function(fn, message, exceptions) {
+  var raised = false;
+  try {
+    fn.call();
+  } catch(e) {
+    raised = true;
+  }
+  equal(raised, true, message, exceptions, 1);
+}
+
+skipEnvironments = function(environments, test) {
+  if(arrayIndexOf(environments, environment) === -1) {
+    test.call();
+  }
+}
+
+syncTestsFinished = function() {
+  syncTestsRunning = false;
+  checkCanFinish();
+}
+
+// This method has 2 benefits:
+// 1. It gives asynchronous functions their own scope so vars can't be overwritten later by other asynchronous functions
+// 2. It runs the tests after the CPU is free decreasing the chance of timing based errors.
+async = function(fn, ms) {
+  setTimeout(fn, ms || 200);
+}
+
+runPerformanceTest = function() {
+  var iterations, fn, start, i = 0;
+  if(arguments.length == 1) {
+    iterations = 10000;
+    fn = arguments[0];
+  } else {
+    iterations = arguments[0];
+    fn = arguments[1];
+  }
+  start = new Date();
+  while(i < iterations) {
+    fn();
+    i++;
+  }
+  console.info(iterations, ' iterations finished in ', new Date() - start, ' milliseconds');
+}
+
