@@ -3,8 +3,21 @@
 
 require('cors.php');
 
+if ($_SERVER['REQUEST_METHOD'] == "PUT") {
+  $v = parse_str(file_get_contents("php://input"), $puts);
+  echo "REQUEST WAS PUT AND DATA IS: ";
+  print_r($puts);
+} elseif ($_SERVER['REQUEST_METHOD'] == "POST") {
+  echo "REQUEST WAS POST AND DATA IS: ";
+  print_r($_POST);
+} elseif ($_SERVER['REQUEST_METHOD'] == "GET") {
+  echo "REQUEST WAS GET AND DATA IS: ";
+  print_r($_GET);
+ }
 
-$callback = $_GET['callback'];
+
+die();
+
 
 $json = <<<JSON
 {
