@@ -1,0 +1,16 @@
+{
+  "name": "APIConnect",
+  "version": "0.6.0",
+  "description": "A simplified Javascript interface for working with APIs.",
+  "keywords": ["api", "rest", "routing","cross-domain","ajax"],
+  "homepage": "http://andrewplummer.github.com/APIConnect/",
+  "author": "Andrew Plummer",
+  "main": "./lib/main",
+  "directories" : {"lib" : "./lib"},
+  "repository" : {"type" : "git", "url": "https://github.com/andrewplummer/APIConnect"},
+  "dependencies": {
+    "request": ">= 12.9.153",
+    "jquery-deferred": ">= 0.2.0"
+  },
+  "engines" : {"node" : ">= 0.6.0"}
+}
