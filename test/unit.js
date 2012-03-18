@@ -70,7 +70,7 @@
 
   function captureRequest(url, options) {
     capturedRequests.push({ url: url, options: options, params: options.data, method: options.type, options: options });
-    var response = { response: 'RESPONDED!' };
+    var response = options.dataType == 'json' ? { response: 'RESPONDED!' } : 'RESPONDED!';
     if(options.complete) {
       options.complete(response);
     }
@@ -1371,5 +1371,22 @@
     assertLastWasContentType('json');
   });
 
+
+  test('different format', function() {
+    api.format('xml', 'php');
+    api.connect('chocolate');
+    api.getChocolate().then(function(response) {
+      equal(typeof response, 'string', 'Response should be a string');
+    });
+    assertRouteCalled(api, 'http://domain/chocolate.php', 'GET');
+  });
+
+  test('connect should return the context', function() {
+    equals(api.connect('foobar') === api, true, 'Connect returned the context');
+  });
+
+  test('resource should return the context', function() {
+    equals(api.resource('foobar') === api, true, 'Resource returned the context');
+  });
 
 })();
