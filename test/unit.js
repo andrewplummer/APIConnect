@@ -29,7 +29,7 @@
 
     // Mock jQuery for the tests
     $ = {
-      Deferred: require('Deferred'),
+      Deferred: require('jquery-deferred').Deferred,
       support: { cors: true }
     };
 
