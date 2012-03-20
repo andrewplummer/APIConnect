@@ -3,251 +3,8 @@
 <head>
   <meta charset='utf-8'>
   <title>APIConnect - A simplified Javascript interface for working with APIs.</title>
-  <style type="text/css">
-    body {
-      margin: 4em 0;
-      background-color: #eee;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #000000;
-      line-height: 1.4;
-    }
-    h1 {
-      text-indent: -10000px;
-      background: url(images/logo.png) no-repeat center center;
-      width: 1069px;
-      height: 133px;
-      margin-left: -640px;
-    }
-    #container {
-      margin: 0 auto;
-      min-width: 700px;
-      max-width: 900px;
-    }
-    h1 a { text-decoration: none }
-    h2 {
-      font-family: "Trebuchet MS", "Helvetica", sans-serif;
-      font-weight: normal;
-      font-size: 2em;
-      margin-top: 2em;
-      color: #888;
-    }
-    h3 { text-align: center; color: #2e67dc; }
-    a { color: #2e67dc; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    #json_stage,
-    .code_example .stage,
-    .code {
-      font-family:"Monaco","Lucida Console","Bitstream Vera Sans Mono","Courier New",monospace;
-    }
-    .code {
-      border: 1px solid #d2d2d2;
-      color: #222;
-      background-color: #e8e8e8;
-      border-radius: 5px;
-      padding: 1px 6px;
-      margin: 0px 3px;
-      font-size: 14px;
-    }
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-
-
-#download,
-#github {
-  float: right;
-  display: inline-block;
-  width: 120px;
-  padding: 100px 0px 10px 0px;
-  text-align: center;
-  color: #555;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 5px;
-}
-
-#download:hover,
-#github:hover {
-  background-color: rgba(0,0,0,0.03);
-  color: #333;
-}
-
-#download {
-  background: url(images/download.png) no-repeat center 10px;
-  margin-bottom: 10px;
-}
-
-#github {
-  background: url(images/github.png) no-repeat center 6px;
-}
-
-#share {
-  float: right;
-  clear: right;
-  margin-left: 35px;
-  margin-top: 15px;
-  width: 230px;
-  height: 75px;
-}
-
-#share > div {
-  float: left;
-  margin-top: 3px;
-  width: 70px;
-}
-
-#twitter {
-  margin-right: 3px;
-}
-
-.code_example {
-  padding: 15px 20px;
-  border-radius: 5px;
-  margin-bottom: 40px;
-  line-height: 1.5;
-  color: #aaa;
-  background: #222 url(images/loading.gif) no-repeat center center;
-  text-indent: -10000px;
-  min-height: 50px;
-}
-
-.code_example.initialized {
-  background: #222;
-  text-indent: 0px;
-}
-
-.code_example pre,
-.code_example .result {
-  font-size: 16px;
-  margin: 0px;
-  position: relative;
-  display: block;
-  clear: both;
-  outline: none;
-  line-height: 1.3;
-}
-
-.code_example .result {
-  margin-top: 10px;
-  color: #777;
-  color: rgba(255,255,255,0.5);
-  display: inline-block;
-}
-
-.code_example .prompt {
-  vertical-align: top;
-  margin-right: 4px;
-}
-
-.code_example .actions {
-  visibility: hidden;
-  border-radius: 5px;
-  position: absolute;
-  top: 0px;
-  right: 15px;
-  padding: 2px;
-  text-align: right;
-}
-
-.code_example:hover .actions {
-  visibility: visible;
-}
-
-.code_example:hover .live_marker {
-  visibility: hidden;
-}
-
-.code_example .actions p {
-  width: auto;
-  margin-bottom: 0px;
-}
-
-.code_example .actions span {
-  font-size: 14px;
-  font-weight: bold;
-  padding: 2px 4px;
-  display: inline-block;
-  color: #49d;
-  cursor: pointer;
-}
-
-.code_example .actions .shortcut_key {
-  font-size: 11px;
-  font-weight: bold;
-  color: #ccc;
-  color: rgba(255,255,255,0.5);
-  float: left;
-  text-align: right;
-  margin: 2px 0px 0px 0px;
-}
-
-.code_example .error {
-  color: #c00;
-}
-
-.code_example {
-  clear: left;
-  position: relative;
-  line-height: 1.3;
-}
-
-.code_example pre span {
-  display: inline;
-}
-
-.code_example .live_marker {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  color: #db0;
-  margin: 0px;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-
-
-#json_stage {
-  display: none;
-  background: #222;
-  color: #fff;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  font-size: 14px;
-  height: 100%;
-  padding: 10px 10px 0px 10px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  box-shadow: 5px 0px 5px rgba(0,0,0,0.5);
-  overflow: auto;
-}
-
-#json_stage.loading {
-  background: #222 url(images/loading.gif) no-repeat center center;
-}
-
-#json_stage .route {
-  color: #eb4;
-  margin-bottom: 15px;
-  font-size: 17px;
-  max-width: 700px;
-}
-
-#json_stage .output {
-  max-width: 700px;
-  white-space: pre-wrap;
-}
-
-
-
-
-
-
-  </style>
   <link rel="stylesheet" href="stylesheets/sh_custom.css" type="text/css" />
+  <link rel="stylesheet" href="stylesheets/main.css" type="text/css" />
 </head>
 
 <body spellcheck="false">
@@ -272,13 +29,13 @@
      </div>
     </div>
 
-    <h1>
+    <h1 id="logo">
       <a href="https://github.com/andrewplummer/APIConnect">APIConnect</a>
     </h1>
 
     <p>APIConnect is a Javascript class that provides a simplified interface (I know, that's redundant) for client-side interaction with APIs, especially those hosted on other domains. Setup is as simple as creating the instance, specifying the domain, connecting the route, and running it. APIConnect works in all major browsers and requires jQuery.</p>
 
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect();
 api.domain('graph.facebook.com');
 api.connect(':object_id');
@@ -288,19 +45,19 @@ api.getObject({ object_id: page_id }).then(displayJSON);
 <h2>Connecting Routes</h2>
 <p>Any route can have any number of params in the base URL (contexts). These contexts are always optional, and will only be added if they exist in the params object when the route is called.</p>
 <p>Once the route is connected, calling it is as simple as calling a camelized method on the instance. When making the call, the first argument is the params object, and the second argument is for "options". Here you can specify options for both APIConnect as well as any valid option for jQuery.ajax, meaning all standard callbacks will work.</p>
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect('graph.facebook.com');
 api.connect(':object_id');
 api.getObject({ object_id: page_id }, { complete: displayJSON });
 </div>
 <p>API calls also pass back jQuery deferred objects, so these can be used as well.</p>
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect('graph.facebook.com');
 api.connect(':object_id');
 api.getObject({ object_id: page_id }).then(displayJSON);
 </div>
 <p>Both params or options can also be made "global" or instance-wide by specifying them directly on the instance. They will be applied to all routes (but can be overwritten with local params/options).</p>
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect('graph.facebook.com');
 api.params({ access_token: app_access_token });
 api.options({ complete: displayJSON });
@@ -309,7 +66,7 @@ api.getObject({ object_id: page_id });
 </div>
 <p>The 4 main HTTP verbs, "GET", "POST", "PUT", and "DELETE", are allowed in routes, and map to humanized verbs "get", "create", "update", and "destroy", respectively. "GET" is the implied default.</p>
 <p>This code is actually posting to a <a href="http://www.facebook.com/pages/APIConnect-Test/339240909450916" target="_blank">live Facebook page</a> through APIConnect!</p>
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect('graph.facebook.com');
 api.param('access_token', app_access_token);
 api.connect('POST :id/feed');
@@ -319,20 +76,20 @@ api.createFeed({ id: page_id, message: message }, { complete: displayJSON });
 </div>
 <p>The camelized method name is a combination of the humanied HTTP verb and the last non-parameter fragment in the route. In the examples, a "non-parameter fragment" is <span class="code">photos</span> as opposed to a "parameter fragment" <span class="code">:photo_type</span>, etc. If no non-parameter fragments exist, the last parameter fragment will be used instead.</p>
 <p>If this is still not good enough, the entire method name can easily be overridden using the <span class="code">as</span> option when connecting the route.</p>
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect('graph.facebook.com');
 api.connect(':object_id/photos/:photo_type', { as: 'getImages' });
 api.getImages({ object_id: page_id, photo_type: 'profile' }, { complete: displayJSON });
 </div>
 <p>Params can also be "burned in" when connecting routes, allowing even more expressive statements.</p>
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect('graph.facebook.com');
 var p = { photo_type: 'profile' };
 api.connect(':object_id/photos/:photo_type', { params: p, as: 'getProfileImages' });
 api.getProfileImages({ object_id: page_id }, { complete: displayJSON });
 </div>
 <p>"resource" serves as a shortcut to all 4 HTTP verbs.</p>
-<div class="code_example inactive">
+<div class="multiline code_example inactive">
 api.resource('member');
 
 api.getMember();     <span class="dim">// GET     http://domain/member.json</span>
@@ -341,7 +98,7 @@ api.updateMember();  <span class="dim">// PUT     http://domain/member.json</spa
 api.destroyMember(); <span class="dim">// DELETE  http://domain/member.json</span>
 </div>
 <p>Members of these routes can be limited using <span class="code">only</span> and <span class="code">exclude</span>.</p>
-<div class="code_example inactive">
+<div class="multiline code_example inactive">
 api.resource('member', { only: 'show,update' });
 
 api.getMember();     <span class="dim">// GET     http://domain/member.json</span>
@@ -353,7 +110,7 @@ api.createMember();  <span class="dim">// POST    http://domain/member.json</spa
 api.destroyMember(); <span class="dim">// DELETE  http://domain/member.json</span>
 </div>
 <p>If a resource is a collection, passing <span class="code">collection: true</span> in the options for "resource" will create standard collection routes including an "index" method.</p>
-<div class="code_example inactive">
+<div class="multiline code_example inactive">
 api.resource('status', { collection: true });
 
 api.getStatus();              <span class="dim">// GET     http://domain/status.json</span>
@@ -363,7 +120,7 @@ api.updateStatus({ id: 3 });  <span class="dim">// PUT     http://domain/status/
 api.destroyStatus({ id: 3 }); <span class="dim">// DELETE  http://domain/status/3.json</span>
 </div>
 <p>If <span class="code">collection</span> is omitted, it will attempt to be intelligently detected by the pluralization of the resource passed.</p>
-<div class="code_example inactive">
+<div class="multiline code_example inactive">
 api.resource('members');
 
 api.getMembers();              <span class="dim">// GET     http://domain/members.json</span>
@@ -374,7 +131,7 @@ api.destroyMembers({ id: 3 }); <span class="dim">// DELETE  http://domain/member
 </div>
 <h2>Options</h2>
 <p>Options are passed in when making the call, and can be overridden there, however instance-wide options are set on the object itself.</p>
-<div class="code_example inactive">
+<div class="multiline code_example inactive">
 api.option('headers', { myCustomHeaderName: 'myCustomHeaderValue' });
 
 api.options({
@@ -386,13 +143,13 @@ api.options({
 });
 </div>
 <p>Additionally the basic options "domain", "protocol", "port", "timeout", "cors", and "jsonp" can be set directly on the instance. When setting options, the instance itself will be returned, allowing method-chaining just like jQuery objects.</p>
-<div class="code_example inactive">
+<div class="multiline code_example inactive">
 api.domain('localhost');
 api.port('4000');
 api.cors(false);
 </div>
 <p>All such options are both getters and setters. Passing no arguments will return their current value.</p>
-<div class="code_example inactive">
+<div class="multiline code_example inactive">
 api.domain();     // "localhost"
 api.port('4000'); // "4000"
 api.cors(false);  // false
@@ -401,7 +158,7 @@ api.cors(false);  // false
 <h2>Cross-domain ajax and JSONP</h2>
 <p>APIConnect will by default attempt to use CORS (cross-origin resource sharing). For this to work, the API you're working with needs to be sending the correct response headers. If your calls are returning a 200-level response but no data is coming in, most likely CORS is not supported and needs to be disabled.</p>
 <p>Turning off CORS support will fall back to JSONP, which also needs to be enabled on the API side.</p>
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect('graph.facebook.com');
 api.cors(false);
 api.connect(':object_id');
@@ -411,7 +168,7 @@ api.getObject({ object_id: page_id }).then(displayJSON);
 
 <h2>Advanced</h2>
 <p>If you have many routes with the same context you can hold onto it so as not to repeat yourself.</p>
-<div class="code_example inactive">
+<div class="multiline code_example inactive">
 api.context(':user', function() {
   api.connect('tasks');
   api.connect('images');
@@ -420,7 +177,7 @@ api.context(':user', function() {
 });
 </div>
 <p>Results from an api call can be cached locally for the duration of the page load. Only GET requests will be cached and only if the params match exactly. If cached, the calls will resolve successfully immediately.</p>
-<div class="code_example console no_autorun show_live">
+<div class="multiline code_example console no_autorun show_live">
 api = api || new APIConnect('graph.facebook.com');
 api.connect(':object_id');
 api.getObject({ object_id: page_id }, { cache: true }).then(displayJSON);
@@ -497,8 +254,6 @@ api.getObject({ object_id: page_id }, { cache: true }).then(displayJSON);
       }
       return deferred;
     }
-// TODO: CALLBACK FUNCTION SHORTCUT FOR "THEN"
-// TODO: ALLOW DIRECT BURN-IN of params
 
   </script>
   <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>

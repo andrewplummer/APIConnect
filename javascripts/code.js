@@ -38,19 +38,20 @@
     sh_highlightElement(pre.get(0), sh_languages['javascript']);
     html = pre.html().replace(/_BR_/g, '<br/>');
     pre.html(html);
-    el.addClass('initialized');
+    el.add(el.parents()).filter('.code_example').addClass('initialized');
     return html;
   }
 
-  function runScript(code, output, defer, hideResult, inConsole){
+  function runScript(code, output, defer, hideResult, inConsole, beforeCallback, resultCallback){
     $(document).trigger('code.will_execute');
     try {
+      if(beforeCallback) beforeCallback();
       var result = eval(code);
-      if(result.getTime){
+      if(result && result.getTime){
         result = result.format('{Weekday}, {Month} {day}, {year} {hh}:{mm}');
       }
       if(!defer && !hideResult){
-        if(result.exec){
+        if(result && result.exec){
           output.text('/' + result.source + '/' + (result.global ? 'g' : '') + (result.ignoreCase ? 'i' : '') + (result.multiline ? 'm' : ''));
         } else {
           output.text(window.JSON ? JSON.stringify(result) : result.toString());
@@ -62,14 +63,20 @@
       if(hideResult){
         output.parent('.result').hide();
       }
+      if(resultCallback) {
+        resultCallback(result);
+      }
       $(document).trigger('code.executed', output);
     } catch(e){
+      console.info('ahmm', e);
       output.html('<span class="error">' + e.message + '</span>');
     }
     return false;
   }
 
-  $.fn.activateCodeExample = function(){
+  $.fn.activateCodeExample = function(options){
+
+    options = options || {};
 
     this.each(function(){
 
@@ -81,18 +88,19 @@
       // Have to unescape double escaped html for the sake of String#unescapeHTML
       code = code.replace(/&amp;/g, '&');
 
-      var reset  = $('.reset', el);
-      var edit   = $('.edit', el);
-      var run    = $('.run', el);
-      var pre    = $('pre', el);
-      var output = $('.output', el);
-      var key    = $('.shortcut_key', el);
-      var defer  = el.hasClass('defer');
+      var reset   = $('.reset', el);
+      var edit    = $('.edit', el);
+      var run     = $('.run', el);
+      var pre     = $('pre', el);
+      var output  = $('.output', el);
+      var key     = $('.shortcut_key', el);
+      var defer   = el.hasClass('defer');
+      var autorun = !el.hasClass('no_autorun') && !options.no_autorun;
       var hideResult = el.hasClass('hide_result') && !el.hasClass('force_result');
-      var inConsole = el.hasClass('console');
+      var inConsole = el.hasClass('console') || options.console;
 
       run.click(function(){
-        runScript(pre.text(), output, defer, hideResult, inConsole);
+        runScript(pre.text(), output, defer, hideResult, inConsole, options.before, options.result);
       });
 
       edit.click(function(){
@@ -101,8 +109,8 @@
 
       reset.click(function(){
         pre.html(markedUpCode);
-        if(!el.hasClass('no_autorun')) {
-          runScript(code, output, defer, hideResult, inConsole);
+        if(autorun) {
+          runScript(code, output, defer, hideResult, inConsole, options.before, options.result);
         }
       });
 
@@ -130,8 +138,8 @@
         }
       });
 
-      if(!el.hasClass('no_autorun')) {
-        runScript(code, output, defer, hideResult, inConsole);
+      if(autorun) {
+        runScript(code, output, defer, hideResult, inConsole, options.before, options.result);
       }
 
     });
