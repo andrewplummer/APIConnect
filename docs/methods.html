@@ -1,213 +1,270 @@
-
-<div class="method">
-  <h3 class="name">connect</h3>
-  <p class="description">
-    <span class="short">Connects the route.</span>
-    <span class="extra">This is the main workhorse of APIConnect. <span class="required parameter">route</span> contains the string of the route to be called, it can have the 4 HTTP verbs GET, POST, PUT, or DELETE preceding it, and it can also contain the format (.json, etc). <span class="optional parameter">options</span> is an object that contains the options for the route. Any options here will be merged into the options passed when calling the route. Additionally there are 2 special options: <span class="code">params</span> will "burn in" any parameters so that they will always be passed when the route is called. <span class="code">as</span> will override the resulting method name, which by default is a camel-case form of the human-readable method (get, create, update, or destroy) plus the last fragment in the route. For example, <span class="code">connect('GET friends/statuses')</span> will result in the method name <span class="code">getStatuses</span>.</span>
-  </p>
-  <p class="returns">Instance</p>
-  <div class="examples"><p></p>
-<p>   api.connect('friends')</p>
-<p>   api.connect('POST friends')</p>
-<p>   api.connect('PUT friends')</p>
-<p>   api.connect('DELETE friends')</p>
-<p>   api.connect('friends', { as 'fetchPeople' })</p>
-<p>   api.connect('search', { params: { complete: true }, as: 'findCompleted' })</p></div>
+<div id="legend">
+  <ul>
+    <li><a href="#constructor">Constructor</a></li>
+    <li><a href="#method_connect">connect</a></li>
+<li><a href="#method_contentType">contentType</a></li>
+<li><a href="#method_context">context</a></li>
+<li><a href="#method_cors">cors</a></li>
+<li><a href="#method_domain">domain</a></li>
+<li><a href="#method_format">format</a></li>
+<li><a href="#method_getOverride">getOverride</a></li>
+<li><a href="#method_jsonp">jsonp</a></li>
+<li><a href="#method_option">option</a></li>
+<li><a href="#method_options">options</a></li>
+<li><a href="#method_param">param</a></li>
+<li><a href="#method_params">params</a></li>
+<li><a href="#method_port">port</a></li>
+<li><a href="#method_postOverride">postOverride</a></li>
+<li><a href="#method_protocol">protocol</a></li>
+<li><a href="#method_resource">resource</a></li>
+<li><a href="#method_timeout">timeout</a></li>
+  </ul>
 </div>
 
-<div class="method">
-  <h3 class="name">contentType</h3>
+<div class="method" id="method_connect">
+  <h3 class="monospace name">connect<span class="arguments">(<span class="monospace required parameter" title="Required argument">route</span>, <span class="monospace optional parameter" title="Optional argument">options</span>)</span></h3>
+  <p class="description">
+    <span class="short">Connects the route.</span>
+    <span class="extra">This is the main workhorse of APIConnect. <span class="monospace required parameter">route</span> is the route to be called, it can have the 4 HTTP verbs GET, POST, PUT, or DELETE preceding it, and it can also contain the format (.json, etc). <span class="monospace optional parameter">options</span> is an object that contains the options for the route. Any options here will be merged into the options passed when calling the route. Additionally there are 2 special options: <span class="code">params</span> will "burn in" any parameters so that they will always be passed when the route is called. <span class="code">as</span> will override the resulting method name, which by default is a camel-case form of the human-readable method (get, create, update, or destroy) plus the last fragment in the route. For example, <span class="code">connect('GET friends/statuses')</span> will result in the method name <span class="code">getStatuses</span>.</span>
+  </p>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.connect('friends')</p>
+<p class="single_code_example">api.connect('POST friends')</p>
+<p class="single_code_example">api.connect('PUT friends')</p>
+<p class="single_code_example">api.connect('DELETE friends')</p>
+<p class="single_code_example">api.connect('friends', { as 'fetchPeople' })</p>
+<p class="single_code_example">api.connect('search', { params: { complete: true }, as: 'findCompleted' })</p></div>
+</div>
+
+<div class="method" id="method_contentType">
+  <h3 class="monospace name">contentType<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the contentType. Default is <span class="code">form</span>.</span>
     <span class="extra">If the server requires a special contentType for parameter data, this can be specified here. Currently only <span class="code">form</span> and <span class="code">json</span> are supported. If the content type is "form", the standard <span class="code">key=value</span> parameter serialization format will be used. If the contentType is <span class="code">json</span>, the mime-type will be changed to <span class="code">application/json</span>. In this case params need to be passed as a string, otherwise APIConnect will attempt to stringify them using <span class="code">JSON.stringify</span>, which will fail in older browsers if not available. If you need this functionality a proper JSON shim should be used such as https://github.com/douglascrockford/JSON-js.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.contentType('json')</p>
-<p>api.contentType()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.contentType('json')</p>
+<p class="single_code_example">api.contentType()</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">context</h3>
+<div class="method" id="method_context">
+  <h3 class="monospace name">context<span class="arguments">(<span class="monospace required parameter" title="Required argument">name</span>, <span class="monospace required parameter" title="Required argument">callback</span>)</span></h3>
   <p class="description">
-    <span class="short">Allows a callback inside which <span class="required parameter">context</span> will be prepended.</span>
+    <span class="short">Allows a callback inside which the context <span class="monospace required parameter">name</span> will be prepended.</span>
     <span class="extra">If you have multiple routes with the same context, use this so that it doesn't have to be added to every <span class="code">connect</span> statement.</span>
   </p>
-  <p class="returns">Nothing</p>
-  <div class="examples"><p>   api.context('friends', function() {
-api.connect('posts');
-api.connect('photos');
-api.connect('events');
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Nothing</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.context('friends', function() {
+  api.connect('posts');
+  api.connect('photos');
+  api.connect('events');
 });</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">cors</h3>
+<div class="method" id="method_cors">
+  <h3 class="monospace name">cors<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the CORS (cross-origin resource sharing) setting. Default is <span class="code">true</span>.</span>
-    <span class="extra">When active, APIConnect will attempt to make cross-browser ajax requests IF they are supported by the browser. If this setting is <span class="code">false</span>, or if the browser does not support CORS, JSONP will be used instead. If the API is on the same domain, this setting should be kept as <span class="code">true</span> and <span class="code">jsonp</span> should be disabled. Note that CORS needs to be enabled on the server-side as well. If the API you're trying to connect to does not support this feature it should be turned off.</span>
+    <span class="extra">When active, APIConnect will attempt to make cross-browser ajax requests. JSONP will be used instead if the API is not on the same domain and  the browser does not support CORS. Setting this to <span class="code">false</span> will turn off CORS support for all browsers. Note that CORS needs to be enabled on the server-side as well. If the API you're trying to connect to does not support this feature it should be turned off.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.cors(false)</p>
-<p>api.cors()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.cors(false)</p>
+<p class="single_code_example">api.cors()</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">domain</h3>
+<div class="method" id="method_domain">
+  <h3 class="monospace name">domain<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the domain.</span>
-    <span class="extra">Domain can also be set when creating a new instance of APIConnect by passing a string as the first argument to the constructor.</span>
+    <span class="extra">The domain can also be set when creating a new instance of APIConnect by passing a string as the first argument to the constructor.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.domain('graph.facebook.com')</p>
-<p>api.domain()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.domain('graph.facebook.com')</p>
+<p class="single_code_example">api.domain()</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">format</h3>
+<div class="method" id="method_format">
+  <h3 class="monospace name">format<span class="arguments">(<span class="monospace required parameter" title="Required argument">dataFormat</span>, <span class="monospace optional parameter" title="Optional argument">appendFormat</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the format.</span>
-    <span class="extra"><span class="required parameter">dataFormat</span> is the format passed to the AJAX library. By default this is JSON, so the result will be parsed as JSON. <span class="optional parameter">appendFormat</span> is the format appended to each route. By default this is <span class="code">false</span>, so no format will be appended. If <span class="code">true</span> it will use the <span class="required parameter">dataFormat</span>, and if anything else it will use it as the appended format instead.</span>
+    <span class="extra"><span class="monospace required parameter">dataFormat</span> is the format passed to the AJAX library. By default this is JSON, so the result will be parsed as JSON. <span class="monospace optional parameter">appendFormat</span> is the format appended to each route. By default this is <span class="code">false</span>, so no format will be appended. If <span class="code">true</span> it will use the <span class="monospace required parameter">dataFormat</span>, and if anything else it will use it as the appended format instead.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.format()</p>
-<p>api.format('xml', 'php')</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.format()</p>
+<p class="single_code_example">api.format('xml', 'php')</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">getOverride</h3>
+<div class="method" id="method_getOverride">
+  <h3 class="monospace name">getOverride<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the "getOverride" option.</span>
-    <span class="extra">This option turns all requests of POST, PUT, and DELETE into GET methods and instead sets a <span class="code">_method</span> parameter representing the true method. <span class="required parameter">setting</span> can be 'always', which always adds <span class="code">_method</span>, 'jsonp', which only overrides when using JSONP, 'always-except-get', or 'jsonp-except-get', which do the same except do not override GET methods, which typically do not require a <span class="code">_method</span> parameter.</span>
+    <span class="extra">This option turns all POST, PUT, and DELETE requests into GET and instead sets a <span class="code">_method</span> parameter representing the true method. <span class="monospace required parameter">setting</span> can be <span class="code">always</span>, which always adds <span class="code">_method</span>, <span class="code">jsonp</span>, which only overrides when using JSONP, <span class="code">always-except-get</span>, or <span class="code">jsonp-except-get</span>, which do the same except do not override GET methods, which typically do not require a <span class="code">_method</span> parameter.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.getOverride()</p>
-<p>api.getOverride('always')</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.getOverride()</p>
+<p class="single_code_example">api.getOverride('always')</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">jsonp</h3>
+<div class="method" id="method_jsonp">
+  <h3 class="monospace name">jsonp<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the JSONP setting. Default is <span class="code">true</span>.</span>
-    <span class="extra">When active, APIConnect will attempt to make JSONP requests if CORS is disabled or not available. If the API is on the same domain, this should be set to <span class="code">false</span>. Note that JSONP needs to be enabled on the server-side as well. If the API you're trying to connect to does not support this feature it should be turned off.</span>
+    <span class="extra">When active, APIConnect will attempt to make JSONP requests if CORS is disabled or not available, and if the API is not the same domain. Note that JSONP needs to be enabled on the server-side as well. If the API you're trying to connect to does not support this feature it should be turned off.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.jsonp(false)</p>
-<p>api.jsonp()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.jsonp(false)</p>
+<p class="single_code_example">api.jsonp()</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">option</h3>
+<div class="method" id="method_option">
+  <h3 class="monospace name">option<span class="arguments">(<span class="monospace required parameter" title="Required argument">name</span>, <span class="monospace optional parameter" title="Optional argument">value</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets a default option.</span>
-    <span class="extra">Default options are merged into the local options of all routes when called, and apply to all connected routes.</span>
+    <span class="extra">Default options are merged into the local options of all routes when called, and apply to all connected routes. Instance-wide options are always merged in last, ie. local options will always override them, so they can also be thought of as defaults.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.option('port', 3000)</p>
-<p>api.option('port')</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.option('port', 3000)</p>
+<p class="single_code_example">api.option('port')</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">options</h3>
+<div class="method" id="method_options">
+  <h3 class="monospace name">options<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">obj</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the default options.</span>
-    <span class="extra">Calls <span class="code">option</span> for each key/value pair in <span class="optional parameter">obj</span>. When called without any arguments returns all default options.</span>
+    <span class="extra">Calls <span class="code">option</span> for each key/value pair in <span class="monospace optional parameter">obj</span>. When called without any arguments returns all default options.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.options({ port: 3000 })</p>
-<p>api.options()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.options({ port: 3000 })</p>
+<p class="single_code_example">api.options()</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">param</h3>
+<div class="method" id="method_param">
+  <h3 class="monospace name">param<span class="arguments">(<span class="monospace required parameter" title="Required argument">name</span>, <span class="monospace optional parameter" title="Optional argument">value</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets a default parameter.</span>
-    <span class="extra">Default parameters are added to the end of all routes used. This is useful for things like API keys or access tokens that need to be used in every API call.</span>
+    <span class="extra">Default parameters are added to all routes. This is useful for things like API keys or access tokens that need to be used in every API call.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.param('api_key', 'foo')</p>
-<p>api.param('api_key')</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.param('api_key', 'foo')</p>
+<p class="single_code_example">api.param('api_key')</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">params</h3>
+<div class="method" id="method_params">
+  <h3 class="monospace name">params<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">obj</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the default parameters.</span>
-    <span class="extra">Calls <span class="code">param</span> for each key/value pair in <span class="optional parameter">obj</span>. When called without any arguments returns all default params.</span>
+    <span class="extra">Calls <span class="code">param</span> for each key/value pair in <span class="monospace optional parameter">obj</span>. When called without any arguments returns all default params.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.param({ api_key: 'foo' })</p>
-<p>api.param()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.param({ api_key: 'foo' })</p>
+<p class="single_code_example">api.param()</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">port</h3>
+<div class="method" id="method_port">
+  <h3 class="monospace name">port<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the port. Default is <span class="code">null</span>.</span>
     <span class="extra"></span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.port(3000)</p>
-<p>api.port()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.port(3000)</p>
+<p class="single_code_example">api.port()</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">postOverride</h3>
+<div class="method" id="method_postOverride">
+  <h3 class="monospace name">postOverride<span class="arguments">(<span class="monospace required parameter" title="Required argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the "postOverride" option.</span>
-    <span class="extra">Some APIs require a POST method to stand in for PUT and DELETE. This option turn all PUT and DELETE requests into POST with a <span class="code">_method</span> parameter representing the true method. <span class="required parameter">setting</span> can be <span class="code">true</span> or <span class="code">false</span>.</span>
+    <span class="extra">Some APIs require a POST method to stand in for PUT and DELETE. This option turns all PUT and DELETE requests into POST with a <span class="code">_method</span> parameter representing the true method. <span class="monospace required parameter">setting</span> can be <span class="code">true</span> or <span class="code">false</span>.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.postOverride()</p>
-<p>api.postOverride(true)</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.postOverride()</p>
+<p class="single_code_example">api.postOverride(true)</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">protocol</h3>
+<div class="method" id="method_protocol">
+  <h3 class="monospace name">protocol<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the default protocol. Default is "auto".</span>
     <span class="extra">When set to "auto", https will be used if the current page is using https, or if a param like "token", "access_token", or "oauth_token" is found in the params. Otherwise will use http.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.protocol('https')</p>
-<p>api.protocol()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.protocol('https')</p>
+<p class="single_code_example">api.protocol()</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">resource</h3>
+<div class="method" id="method_resource">
+  <h3 class="monospace name">resource<span class="arguments">(<span class="monospace required parameter" title="Required argument">name</span>, <span class="monospace optional parameter" title="Optional argument">options</span>)</span></h3>
   <p class="description">
     <span class="short">Shortcut for connecting multiple routes for the same resource.</span>
-    <span class="extra">For singular resources it will connect 4 routes, GET, POST, UPDATE, and DELETE as get<span class="required parameter">Name</span>, create<span class="required parameter">Name</span>, update<span class="required parameter">Name</span>, and destroy<span class="required parameter">Name</span>. For plural routes it will add <span class="code">/:id</span> to the URL and singularize the method name for the above routes, and add an fifth "index" route without the <span class="code">/:id</span> fragment using non-singular method name. Singular/plural routes will attempt to be intelligently detected by finding the singularized form of <span class="required parameter">name</span>. For non-countable or irregular nouns, instead pass <span class="code">{ collection: true }</span> in <span class="optional parameter">options</span> to force plural routes. Additionally, <span class="code">only</span> and <span class="code">except</span> are allowed in <span class="optional parameter">options</span> to limit the routes connected. Both can be either an array or comma-delimited string.</span>
+    <span class="extra">For singular resources it will connect 4 routes, GET, POST, UPDATE, and DELETE as get<span class="monospace required parameter">Name</span>, create<span class="monospace required parameter">Name</span>, update<span class="monospace required parameter">Name</span>, and destroy<span class="monospace required parameter">Name</span>. For plural routes it will add <span class="code">/:id</span> to the URL and singularize the method name for the above routes, and add an fifth "index" route without the <span class="code">/:id</span> fragment using non-singular method name. Singular/plural routes will attempt to be intelligently detected by finding the singularized form of <span class="monospace required parameter">name</span>. For non-countable or irregular nouns, instead pass <span class="code">{ collection: true }</span> in <span class="monospace optional parameter">options</span> to force plural routes. Additionally, <span class="code">only</span> and <span class="code">except</span> are allowed in <span class="monospace optional parameter">options</span> to limit the routes connected. Both can be either an array or comma-delimited string. Note that when limiting connected routes, <span class="code">index</span> and <span class="code">show</span> are used instead of <span class="code">get</span> to differentiate between singular and plural <span class="code">get</span> routes to be connected. This is only applicable to the <span class="code">resource</span> method.</span>
   </p>
-  <p class="returns">Instance</p>
-  <div class="examples"><p></p>
-<p>   api.resource('tweet')</p>
-<p>   api.resource('tweets')</p>
-<p>   api.resource('tweets', { only: 'get,create' })</p>
-<p>   api.resource('tweets', { except: 'get,create' })</p>
-<p>   api.resource('equipment', { collection: true })</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.resource('tweet')</p>
+<p class="single_code_example">api.resource('tweets')</p>
+<p class="single_code_example">api.resource('tweets', { only: 'show,create' })</p>
+<p class="single_code_example">api.resource('tweets', { except: 'show,create' })</p>
+<p class="single_code_example">api.resource('equipment', { collection: true })</p></div>
 </div>
 
-<div class="method">
-  <h3 class="name">timeout</h3>
+<div class="method" id="method_timeout">
+  <h3 class="monospace name">timeout<span class="arguments">(<span class="monospace optional parameter" title="Optional argument">setting</span>)</span></h3>
   <p class="description">
     <span class="short">Gets or sets the timeout. Default is <span class="code">30000</span>.</span>
     <span class="extra">This option will be merged into the params passed to jQuery $.ajax, and tells it when to timeout an ajax request.</span>
   </p>
-  <p class="returns">Setting or Instance</p>
-  <div class="examples"><p></p>
-<p>api.timeout(10000)</p>
-<p>api.timeout()</p></div>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">Setting or Instance</span>
+  </p>
+  <div class="code_example"><p class="single_code_example">api.timeout(10000)</p>
+<p class="single_code_example">api.timeout()</p></div>
 </div>

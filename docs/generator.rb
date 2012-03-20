@@ -23,8 +23,8 @@ end
 
 def get_html_parameters(str)
   return nil if !str
-  str.gsub!(/<(.+?)>/, '<span class="required parameter">\1</span>')
-  str.gsub!(/\[(.+?)\]/, '<span class="optional parameter">\1</span>')
+  str.gsub!(/<(.+?)>/, '<span class="monospace required parameter">\1</span>')
+  str.gsub!(/\[(.+?)\]/, '<span class="monospace optional parameter">\1</span>')
   str.gsub!(/%(.+?)%/, '<span class="code">\1</span>')
 end
 
@@ -195,36 +195,68 @@ def examples_html(examples)
   arr = []
   examples.each do |example|
     if example[:multi_line]
-      tmp << example[:html]
+      count = 0
+      match = example[:html].scan(/\n/)
+      tmp << example[:html].gsub(/\n/) do
+        space = count == match.length - 1 ? '' : '  '
+        count += 1
+        "\n" + space
+      end
     else
-      arr << tmp.join("\n") if tmp != ''
+      arr << tmp.join("\n") if tmp.length > 0
       arr << example[:html]
-      tmp = ''
+      tmp = []
     end
   end
-  arr << tmp.join("\n") if tmp != ''
+  arr << tmp.join("\n") if tmp.length > 0
   html = arr.map do |el|
-    "<p>#{el}</p>"
+    %Q(<p class="single_code_example">#{el.strip}</p>)
   end.join("\n")
-  %Q(<div class="examples">#{html}</div>)
+  %Q(<div class="code_example">#{html}</div>)
 end
 
 def method_html(method)
+  args = method[:params].map do |p|
+    if p[:required]
+      %Q(<span class="monospace required parameter" title="Required argument">#{p[:name]}</span>)
+    else
+      %Q(<span class="monospace optional parameter" title="Optional argument">#{p[:name]}</span>)
+    end
+  end.join(', ')
+  name = %Q(#{method[:name]}<span class="arguments">(#{args})</span>)
 <<-HTML
 
-<div class="method">
-  <h3 class="name">#{method[:name]}</h3>
+<div class="method" id="method_#{method[:name]}">
+  <h3 class="monospace name">#{name}</h3>
   <p class="description">
     <span class="short">#{method[:short]}</span>
     <span class="extra">#{method[:extra]}</span>
   </p>
-  <p class="returns">#{method[:returns]}</p>
+  <p class="returns">
+    <span class="label">Returns:</span>
+    <span class="value">#{method[:returns]}</span>
+  </p>
   #{examples_html(method[:examples])}
 </div>
 HTML
 end
 
+def legend_html
+  legend = @modules[:apiconnect].map do |method|
+  %Q(<li><a href="#method_#{method[:name]}">#{method[:name]}</a></li>)
+  end.join("\n")
+<<-HTML
+<div id="legend">
+  <ul>
+    <li><a href="#constructor">Constructor</a></li>
+    #{legend}
+  </ul>
+</div>
+HTML
+end
+
 File.open(fileout, 'w') do |f|
+  f.puts legend_html
   @modules[:apiconnect].each do |method|
     f.puts method_html(method)
   end
