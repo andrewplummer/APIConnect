@@ -1,18 +1,76 @@
 (function() {
 
 
+
+  if(typeof QUnit !== 'undefined') {
+    testModule = QUnit.module;
+  }
+
   // Local vars
 
   var api, capturedRequests = [], counter;
 
-  $.ajax = captureRequest;
+  if(typeof exports !== 'undefined') {
+    setupNode();
+  } else {
+    setupClient();
+  }
 
+  function setupNode() {
+
+    // Custom non-QUnit stuff
+    require('./setup');
+    environment = 'node';
+    equals = equal;
+
+    require('./unit');
+
+    APIConnect = require('../lib/main');
+
+    // Mock jQuery for the tests
+    $ = {
+      Deferred: require('jquery-deferred').Deferred,
+      support: { cors: true }
+    };
+
+    // Mock the window
+    window = {
+      location: {
+      }
+    }
+
+    // Hacking the prototype to capture the request
+    require('request')('http://localhost').__proto__.init = function(options) {
+      var captureOptions = {
+        options: options,
+        type: this.method,
+        data: this.method == 'GET' ? options.qs : options.form
+      };
+      if(options.json) {
+        captureOptions.data = JSON.stringify(options.json);
+      }
+      captureRequest(this.url, captureOptions);
+      options.callback(null, null, '{ "response": "RESPONDED!" }');
+      return this;
+    }
+
+    setTimeout(function() {
+      syncTestsFinished();
+    }, 1);
+
+  }
+
+  function setupClient() {
+    environment = 'client';
+    // Capture the request directly
+    $.ajax = captureRequest;
+  }
 
   // Utility methods
 
   function captureRequest(url, options) {
-    capturedRequests.push({ url: url, options: options, params: options.data, method: options.type });
-    var response = { response: 'RESPONDED!' };
+    capturedRequests.push({ url: url, options: options, params: options.data, method: options.type, options: options });
+    var response = options.dataType == 'json' ? { response: 'RESPONDED!' } : 'RESPONDED!';
     if(options.complete) {
       options.complete(response);
     }
@@ -23,7 +81,7 @@
   }
 
   function overrideIfRequestIsJSONP(params, method, setting) {
-    return !params._method &&
+    return params._method != 'GET' &&
            !$.support.cors &&
            (setting == 'jsonp' || (setting == 'jsonp-except-get' && method != 'GET'));
   }
@@ -35,27 +93,56 @@
     $.support.cors = was;
   }
 
+  function getLastRequest() {
+    return capturedRequests[capturedRequests.length - 1];
+  }
+
   function assertRouteCalled(context, url, method, params) {
-    var request = capturedRequests[capturedRequests.length - 1],
+    var request = getLastRequest(),
         expectedParamsLength = 0,
         actualParamsLength = 0;
 
     params = params || {};
 
     if(overrideIfRequestIsJSONP(params, method, context.defaultOptions.getOverride)) {
-      params._method = method;
+      if(!params._method) params._method = method;
       method = 'GET';
     }
     equals(request.url, url, 'Last URL was: ' + url);
     equals(request.method, method, 'Last method was: ' + method);
-    for(var key in params) {
-      equals(String(request.params[key]), String(params[key]), 'Params ' + key + ' was: ' + params[key]);
-      expectedParamsLength += 1;
-    }
-    for(var key in request.params) {
-      actualParamsLength += 1;
+    if(typeof params == 'string') {
+      equals(request.params, params, 'Params was a string and was equal');
+    } else {
+      for(var key in params) {
+        equals(String(request.params[key]), String(params[key]), 'Params ' + key + ' was: ' + params[key]);
+        expectedParamsLength += 1;
+      }
+      for(var key in request.params) {
+        actualParamsLength += 1;
+      }
     }
     equals(actualParamsLength, expectedParamsLength, 'Params length was correct');
+  }
+
+  function assertLastWasContentType(type) {
+    var options = getLastRequest().options;
+    if(environment == 'node') {
+      if(type == 'json') {
+        equals(options.json === 'undefined', false, '.json was defined');
+      } else {
+        equals(options.form === 'undefined', false, '.form was defined');
+      }
+    } else {
+      if(type == 'json') {
+        equals(options.contentType, 'application/json', 'Last request was application/json');
+        equals(options.processData, false, 'Last request did not process data');
+        equals(typeof options.data, 'string', 'Last request data was a string');
+      } else {
+        equals(options.contentType, undefined, 'Last request was application/json');
+        equals(options.processData, undefined, 'Last request did not process data');
+        equals(typeof options.data, 'object', 'Last request data was a string');
+      }
+    }
   }
 
   function arrayEach(arr, fn) {
@@ -70,7 +157,7 @@
     counter++;
   }
 
-  module('APIConnect', {
+  testModule('APIConnect', {
     setup: function() {
       api = new APIConnect();
       api.domain('domain');
@@ -79,8 +166,12 @@
     }
   });
 
+
+  // START TESTS
+
+
   test('Domain Setup', function() {
-    strictEqual(api.domain('test'), api, 'APIConnect#domain setting should return the instance');
+    equal(api.domain('test'), api, 'APIConnect#domain setting should return the instance');
     equal(api.domain(), 'test', ' APIConnect#domain calling without arguments should return the field');
   });
 
@@ -98,7 +189,6 @@
 
   });
 
-
   test('get | home_timeline', function() {
     api.connect('home_timeline');
     equal(typeof api.getHomeTimeline, 'function', 'show exists');
@@ -113,6 +203,7 @@
   });
 
 
+
   test('post | home_timeline', function() {
     api.connect('POST home_timeline');
     equal(typeof api.getHomeTimeline, 'undefined', 'show does not exist');
@@ -125,6 +216,7 @@
     assertRouteCalled(api, 'http://domain/home_timeline', 'POST')
 
   });
+
 
   test('put | home_timeline', function() {
     api.connect('PUT home_timeline');
@@ -180,6 +272,7 @@
     });
 
   });
+
 
   test('twitter routes with params', function() {
 
@@ -571,8 +664,6 @@
     equal(typeof api.destroyCat, 'undefined', 'delete does not exist');
   });
 
-
-
   test('Multiple contexts on the same level', function() {
 
     api.context('goals/:goal_id', function() {
@@ -651,6 +742,7 @@
     api.getHomeTimeline({ foo: 'bar' }, { cache: true });
     equal(capturedRequests.length, 2, 'Begin cache capture, requests is now 2', { foo: 'bar' });
 
+
     api.getHomeTimeline({ foo: 'bar' }, {
       cache: true,
       complete: updateCounter,
@@ -659,6 +751,7 @@
     }).then(updateCounter);
     equal(capturedRequests.length, 2, 'Captured from cache, requests is still 2', { foo: 'bar' });
 
+    return;
     api.getHomeTimeline();
 
     equal(capturedRequests.length, 3, 'No caching, requests is now 3');
@@ -681,6 +774,8 @@
       success:  updateCounter,
       error:    updateCounter
     }).then(updateCounter);
+
+
     equal(capturedRequests.length, 3, 'Cache has no effect with POST requests... counter is 3', { foo: 'bar' });
 
     api.createStatus();
@@ -688,6 +783,7 @@
     equal(capturedRequests.length, 4, '4 requests have run');
     equal(counter, 3, 'Counter should be 3');
   });
+
 
   test('allow options through constructor', function() {
 
@@ -1093,8 +1189,8 @@
       sizeError: function(url, params) {
         var one = { url: url, params: {} };
         var two = { url: url, params: {} };
-        one.params = params.q.slice(0, Math.floor(params.q.length / 2));
-        two.params = params.q.slice(Math.floor(params.q.length / 2));
+        one.params.q = params.q.slice(0, Math.floor(params.q.length / 2));
+        two.params.q = params.q.slice(Math.floor(params.q.length / 2));
         return [one, two];
       },
       error: function() {
@@ -1123,8 +1219,8 @@
     equal(completeCount,  1,  'Complete count should be 1');
     equal(successCount,   1,  'Success count should be 1');
 
-    equal(capturedRequests[capturedRequests.length - 1].params, str.slice(0, 2500), 'Request 1 first half')
-    equal(capturedRequests[capturedRequests.length - 2].params, str.slice(2500), 'Request 1 second half')
+    equal(capturedRequests[capturedRequests.length - 1].params.q, str.slice(0, 2500), 'Request 1 first half')
+    equal(capturedRequests[capturedRequests.length - 2].params.q, str.slice(2500), 'Request 1 second half')
 
   });
 
@@ -1211,7 +1307,9 @@
     withoutCorsSupport(function() {
       api.connect('DELETE user');
       api.destroyUser();
-      equals(capturedRequests[0].params._method, 'DELETE', 'Last call was JSONP');
+      // Node environment always supports CORS
+      var expected = environment == 'node' ? undefined : 'DELETE';
+      equals(capturedRequests[0].params._method, expected, 'Last call was JSONP');
     });
   });
 
@@ -1232,6 +1330,13 @@
     assertRouteCalled(api, 'http://threemusketeers.com/chocolate', 'GET')
   });
 
+  test('constructor domain string can have port', function() {
+    api = new APIConnect('localhost:4000');
+    api.connect('chocolate');
+    api.getChocolate();
+    assertRouteCalled(api, 'http://localhost:4000/chocolate', 'GET')
+  });
+
   test('allow direct burn-in of params', function() {
     api.connect('chocolate?moo=foo');
     api.getChocolate();
@@ -1245,6 +1350,43 @@
     });
     assertRouteCalled(api, 'http://domain/chocolate', 'GET');
     equals(counter, 1, 'Counter should have incremented');
+  });
+
+  test('last function can be a direct "then" callback shortcut', function() {
+    api.connect('chocolate');
+    api.getChocolate(function() {
+      counter++;
+    });
+    assertRouteCalled(api, 'http://domain/chocolate', 'GET');
+    equals(counter, 1, 'Counter should have incremented');
+  });
+
+
+  test('can send up application/json data type', function() {
+    api.contentType('json');
+    api.connect('POST chocolate');
+    api.createChocolate({ foo: 'bar' });
+    var expectedParamsString = $.support.cors ? '{"foo":"bar"}' : '{"foo":"bar","_method":"POST"}';
+    assertRouteCalled(api, 'http://domain/chocolate', 'POST', expectedParamsString);
+    assertLastWasContentType('json');
+  });
+
+
+  test('different format', function() {
+    api.format('xml', 'php');
+    api.connect('chocolate');
+    api.getChocolate().then(function(response) {
+      equal(typeof response, 'string', 'Response should be a string');
+    });
+    assertRouteCalled(api, 'http://domain/chocolate.php', 'GET');
+  });
+
+  test('connect should return the context', function() {
+    equals(api.connect('foobar') === api, true, 'Connect returned the context');
+  });
+
+  test('resource should return the context', function() {
+    equals(api.resource('foobar') === api, true, 'Resource returned the context');
   });
 
 })();

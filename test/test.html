@@ -4,60 +4,21 @@
   </head>
   <body>
     <script src="../vendor/jquery-1.7.1.js"></script>
-    <script src="../lib/main.js"></script>
+    <script src="../vendor/json2.js"></script>
+    <script src="../lib/apiconnect.js"></script>
     <script type="text/javascript">
 
 
       $(document).click(function() {
 
-          var api = new APIConnect();
-          var token = 'AAACfWR99ZCZA4BAO5AQ1jCn3cawgiGTlxjZAgDhp4tei6C1i2vbNg0MzOD18BW4MZBAcNTKsmCk02aIxd8sE87MKjmAqVb24jBWSMHuDRwZDZD';
+          api = new APIConnect('localhost:4000');
+          api.contentType('json');
+          api.connect('PUT APIConnect/test/api/test.json');
 
-          api.domain('graph.facebook.com');
-          api.param('access_token', 'AAACfWR99ZCZA4BAEXx4Ip9HQwUXx4rtRdelfZAZA3MIB3MCy7CnsVCoK21BA8Jwmiyk0x5pjZCJVeSASdC2q0w28AvRp9i4QaC68ZBL5k6UAFSRyhjiIri');
-          api.connect('GET /:user');
-          api.connect('GET /:id/feed');
-          api.connect('POST /:id/feed');
-          api.connect('GET /:post_id AS destroyPost');
-
-          /*
-          api.authorize('https://www.facebook.com/dialog/oauth', {
-            client_id: 175205129256350,
-            redirect_uri: 'http://localhost:4002',
-            scope: 'publish_stream'
-          }).then(function(token) {
-            console.info('woohooo', token);
+          console.info('hi');
+          api.updateTest({ moo: 'car' }).then(function() {
+            console.info('woof');
           });
-          return;
-          */
-
-          api.getFeed({
-            id: '100003527955041'
-          }).then(function(response) {
-            console.info('gotcha!', response.data[0].id);
-            console.info(api);
-            api.destroyPost({
-              //id: '100003527955041',
-              post_id: response.data[0].id,
-              method: 'DELETE'
-            });
-          });
-          /*
-          api.createFeed({
-            id: '100003527955041',
-            message: 'W00t! My First message!'
-          }).then(function(whoa) {
-            console.info('YEYEE', whoa);
-          });
-          */
-
-          /*
-          api.getUser('100003527955041', {
-            //headers: headers
-          }).then(function() {
-            console.info('WORKED!', arguments);
-          });
-          */
 
       })
     </script>
