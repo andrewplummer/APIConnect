@@ -1389,4 +1389,10 @@
     equals(api.resource('foobar') === api, true, 'Resource returned the context');
   });
 
+  test('method is not confused with the route', function() {
+    api.connect('posts');
+    api.getPosts();
+    assertRouteCalled(api, 'http://domain/posts', 'GET');
+  });
+
 })();
