@@ -337,7 +337,14 @@ hr {
   margin-top: 80px;
 }
 
+#main_header .buttons {
+  float: right;
+  margin-left: 50px;
+}
+
 p.first {
   width: 600px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
