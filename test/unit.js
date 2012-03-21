@@ -1352,16 +1352,6 @@
     equals(counter, 1, 'Counter should have incremented');
   });
 
-  test('last function can be a direct "then" callback shortcut', function() {
-    api.connect('chocolate');
-    api.getChocolate(function() {
-      counter++;
-    });
-    assertRouteCalled(api, 'http://domain/chocolate', 'GET');
-    equals(counter, 1, 'Counter should have incremented');
-  });
-
-
   test('can send up application/json data type', function() {
     api.contentType('json');
     api.connect('POST chocolate');
