@@ -9,7 +9,7 @@
   "directories" : {"lib" : "./lib"},
   "repository" : {"type" : "git", "url": "https://github.com/andrewplummer/APIConnect"},
   "dependencies": {
-    "request": ">= 12.9.153",
+    "request": ">= 2.9.153",
     "jquery-deferred": ">= 0.2.0"
   },
   "engines" : {"node" : ">= 0.6.0"}
