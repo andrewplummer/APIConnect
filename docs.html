@@ -9,29 +9,28 @@
 <body spellcheck="false">
   <div id="container">
 
-    <a class="return_to_top" href="/">Back</a>
-    <h1>APIConnect Docs</h1>
+    <a id="small_logo" href="./">
+      <img src="images/logo_small.png" alt="APIConnect" />
+    </a>
 
-
-
-<div class="method" id="constructor">
-  <h3 class="monospace name">Constructor</h3>
-  <p class="description">
-    <span class="extra">When creating a new instance of APIConnect, you can pass the domain to be used directly as a string, or an options object. Fields in the options object are identical to the instance methods listed below.</span>
-  </p>
-  <p class="returns">
-    <span class="label">Returns:</span>
-    <span class="value">Instance</span>
-  </p>
-  <div class="code_example">
-    <p class="single_code_example">new APIConnect('example');</p>
-    <p class="single_code_example">new APIConnect({
-  domain: 'example',
-  protocol: 'https',
-  port: '3000'
-});</p>
-  </div>
-</div>
+    <div class="method" id="constructor">
+      <h3 class="monospace name">Constructor</h3>
+      <p class="description">
+        <span class="extra">When creating a new instance of APIConnect, you can pass the domain to be used directly as a string, or an options object. Fields in the options object are identical to the instance methods listed below (output is shown in the console).</span>
+      </p>
+      <p class="returns">
+        <span class="label">Returns:</span>
+        <span class="value">Instance</span>
+      </p>
+      <div class="code_example">
+        <p class="single_code_example">new APIConnect('example');</p>
+        <p class="single_code_example">new APIConnect({
+      domain: 'example',
+      protocol: 'https',
+      port: '3000'
+    });</p>
+      </div>
+    </div>
 
 
 
@@ -339,7 +338,6 @@
     }
 
     $('.code_example p').activateCodeExample({
-      no_autorun: true,
       before: function() {
         api = new APIConnect('example');
       },

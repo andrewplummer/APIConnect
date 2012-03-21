@@ -11,29 +11,34 @@
 
   <div id="container">
 
-    <div class="buttons">
-      <a id="github" href="https://github.com/andrewplummer/APIConnect">Github</a>
-      <a id="download" href="https://raw.github.com/andrewplummer/APIConnect/master/lib/apiconnect.js" title="#specs">Download</a>
+    <div id="main_header">
+
+      <div class="buttons">
+        <a id="docs" href="docs.html" title="#specs">Docs</a>
+        <a id="github" href="https://github.com/andrewplummer/APIConnect">Github</a>
+        <a id="download" href="https://raw.github.com/andrewplummer/APIConnect/master/lib/apiconnect.js" title="#specs">Download</a>
+      </div>
+
+      <div id="share">
+        <div id="google">
+          <g:plusone size="tall"></g:plusone>
+        </div>
+        <div id="twitter">
+          <a href="http://twitter.com/share" class="twitter-share-button" data-count="vertical">Tweet</a>
+          <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+        </div>
+        <div id="facebook">
+          <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#appId=192585364124839&amp;xfbml=1"></script><fb:like href="" send="false" layout="box_count" width="50" show_faces="true" font=""></fb:like>
+       </div>
+      </div>
+
+      <h1 id="logo">
+        <img src="images/logo.png" alt="APIConnect" />
+      </h1>
     </div>
 
-    <div id="share">
-      <div id="google">
-        <g:plusone size="tall"></g:plusone>
-      </div>
-      <div id="twitter">
-        <a href="http://twitter.com/share" class="twitter-share-button" data-count="vertical">Tweet</a>
-        <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-      </div>
-      <div id="facebook">
-        <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#appId=192585364124839&amp;xfbml=1"></script><fb:like href="" send="false" layout="box_count" width="50" show_faces="true" font=""></fb:like>
-     </div>
-    </div>
-
-    <h1 id="logo">
-      <a href="https://github.com/andrewplummer/APIConnect">APIConnect</a>
-    </h1>
-
-    <p>APIConnect is a Javascript class that provides a simplified interface (I know, that's redundant) for client-side interaction with APIs, especially those hosted on other domains. Setup is as simple as creating the instance, specifying the domain, connecting the route, and running it. APIConnect works in all major browsers and requires jQuery.</p>
+    <p class="first">APIConnect is a Javascript class that provides a simplified interface for client-side interaction with APIs, especially those hosted on other domains. Setup is as simple as creating the instance, specifying the domain, connecting the route, and running it. APIConnect works in all major browsers and requires jQuery.</p>
+    <p>APIConnect is now available on <a href="http://search.npmjs.org/#/sugar">npm</a>!</p>
 
 <div class="multiline code_example console no_autorun show_live">
 var api = new APIConnect();

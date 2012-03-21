@@ -68,7 +68,6 @@
       }
       $(document).trigger('code.executed', output);
     } catch(e){
-      console.info('ahmm', e);
       output.html('<span class="error">' + e.message + '</span>');
     }
     return false;
@@ -95,7 +94,7 @@
       var output  = $('.output', el);
       var key     = $('.shortcut_key', el);
       var defer   = el.hasClass('defer');
-      var autorun = !el.hasClass('no_autorun') && !options.no_autorun;
+      var autorun = options.autorun;
       var hideResult = el.hasClass('hide_result') && !el.hasClass('force_result');
       var inConsole = el.hasClass('console') || options.console;
 
