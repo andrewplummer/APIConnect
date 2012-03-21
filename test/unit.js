@@ -8,7 +8,7 @@
 
   // Local vars
 
-  var api, capturedRequests = [], counter;
+  var api, capturedRequests = [], counter, apiError;
 
   if(typeof exports !== 'undefined') {
     setupNode();
@@ -71,13 +71,20 @@
   function captureRequest(url, options) {
     capturedRequests.push({ url: url, options: options, params: options.data, method: options.type, options: options });
     var response = options.dataType == 'json' ? { response: 'RESPONDED!' } : 'RESPONDED!';
-    if(options.complete) {
-      options.complete(response);
+    if(apiError) {
+      if(options.error) {
+        options.error(response);
+      }
+      return $.Deferred().reject(response);
+    } else {
+      if(options.complete) {
+        options.complete(response);
+      }
+      if(options.success) {
+        options.success(response);
+      }
+      return $.Deferred().resolve(response);
     }
-    if(options.success) {
-      options.success(response);
-    }
-    return $.Deferred().resolve(response);
   }
 
   function overrideIfRequestIsJSONP(params, method, setting) {
@@ -91,6 +98,12 @@
     $.support.cors = false;
     fn();
     $.support.cors = was;
+  }
+
+  function simulateAPIError(fn) {
+    apiError = true;
+    fn();
+    apiError = false;
   }
 
   function getLastRequest() {
@@ -163,6 +176,7 @@
       api.domain('domain');
       capturedRequests = [];
       counter = 0;
+      apiError = false;
     }
   });
 
@@ -1352,6 +1366,16 @@
     equals(counter, 1, 'Counter should have incremented');
   });
 
+  test('function shortcut should be fired even on errors', function() {
+    api.connect('chocolate');
+    simulateAPIError(function() {
+      api.getChocolate(function() {
+        counter++;
+      });
+    });
+    equals(counter, 1, 'Counter should have incremented');
+  });
+
   test('can send up application/json data type', function() {
     api.contentType('json');
     api.connect('POST chocolate');
@@ -1360,7 +1384,6 @@
     assertRouteCalled(api, 'http://domain/chocolate', 'POST', expectedParamsString);
     assertLastWasContentType('json');
   });
-
 
   test('different format', function() {
     api.format('xml', 'php');
