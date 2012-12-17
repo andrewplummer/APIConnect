@@ -9,6 +9,16 @@
 
 <body spellcheck="false">
 
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+
+
   <div id="container">
 
     <div id="main_header">
@@ -28,7 +38,7 @@
           <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
         </div>
         <div id="facebook">
-          <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#appId=192585364124839&amp;xfbml=1"></script><fb:like href="" send="false" layout="box_count" width="50" show_faces="true" font=""></fb:like>
+          <div class="fb-like" data-href="http://andrewplummer.github.com/APIConnect/" data-send="false" data-layout="box_count" data-width="150" data-show-faces="false"></div>
        </div>
       </div>
 
